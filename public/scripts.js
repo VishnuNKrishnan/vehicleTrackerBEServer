@@ -12,7 +12,7 @@ window.addEventListener('load', function(){
     vehicleIdInput.value = storedCredentials.vehicleId
     passwordInput.value = storedCredentials.password
 
-    console.log('done')
+    //console.log('done')
 })
 
 
@@ -46,18 +46,29 @@ function storeAuthCredentials(){
 function deviceCompatibilityCheck(){
     const connectivityDot = document.getElementById('connectivityDot')
 
+    var compatibility = false
+    var GPSAccuracy = false
+
+    navigator.geolocation.getCurrentPosition(position=>{
+        GPSAccuracy = position.coords.accuracy
+    })
+
+    if(GPSAccuracy != false && GPSAccuracy <= 50){
+        compatibility = true
+    }
+
+    console.log(`GPSAccuracy: ${GPSAccuracy}`)
     setTimeout(()=>{
-        if(Geolocation in Navigator){
-            connectivityDot.classList.remove('statusDotWaiting');
-            connectivityDot.classList.add('statusDotSuccess');
-        }else{
+        if(!compatibility){
             connectivityDot.classList.remove('statusDotWaiting');
             connectivityDot.classList.add('statusDotFailure');
+        }else{
+            connectivityDot.classList.remove('statusDotWaiting');
+            connectivityDot.classList.add('statusDotSuccess');
         }
-    },2000)
+    },3000)
 }
 deviceCompatibilityCheck()
-
 
 document.getElementById('authenticateBtn').addEventListener('click', ()=>{
     storeAuthCredentials()
