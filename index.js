@@ -10,7 +10,7 @@ const appendSTRCoords = require('./module_appendSTRCoords')
 
 const addWayPointsToFile = require('./module_addWayPointsToFile')
 const port = process.env.PORT || 3000
-app.listen(3000, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
+app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 
 app.use(express.static('public'));
 app.use(express.json())
