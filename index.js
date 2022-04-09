@@ -17,7 +17,7 @@ app.use(express.json())
 
 //API Endpoint for onboard device to authenticate. ADD CODE TO CHECK WITH DATABASE
 app.post('/api/authenticate', (request, response) => {
-    console.log(`New authentication request`)
+    console.log(`\n\n\n\nNew authentication request from vehicleId: ${request.body.vehicleId}\n\n\n\n`)
     var responseForClient = {request: request.body, status: 'success'}
     response.json(responseForClient)
     response.end()
@@ -28,7 +28,9 @@ app.post('/api/authenticate', (request, response) => {
 
 //API Endpoint for onboard device to add waypoint
 app.post('/api/addWayPoints', (request, response) => {
+    console.log(`\n\n\n\nNew wayPoints given by vehicleId: ${request.body.vehicleId}`)
     console.log(request.body)
+    console.log(`\n\n\n\n`)
     var responseForClient = addWayPointsToFile.addWayPointsToFile(request.body)
     response.json(responseForClient)
     response.end()
