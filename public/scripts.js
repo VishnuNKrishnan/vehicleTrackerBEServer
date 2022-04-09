@@ -53,7 +53,7 @@ function deviceCompatibilityCheck(){
         GPSAccuracy = position.coords.accuracy
     })
 
-    if(GPSAccuracy != false && GPSAccuracy <= 50){
+    if(GPSAccuracy != false && GPSAccuracy <= 100){
         compatibility = true
     }
 
