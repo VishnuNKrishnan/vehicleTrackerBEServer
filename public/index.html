@@ -218,7 +218,7 @@
                     'Content-Type': 'application/json'
                 }
             }
-            const response = fetch('http://nvmservices.ddns.net:3000/api/addWayPoints', options).then(response => response.json()).then(data => removeCoords(data.lastIdAdded))
+            const response = fetch('./api/addWayPoints', options).then(response => response.json()).then(data => removeCoords(data.lastIdAdded))
         }
 
 

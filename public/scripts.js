@@ -47,7 +47,7 @@ function deviceCompatibilityCheck(){
     const connectivityDot = document.getElementById('connectivityDot')
 
     setTimeout(()=>{
-        if(Geolocation in navigator){
+        if(Geolocation in Navigator){
             connectivityDot.classList.remove('statusDotWaiting');
             connectivityDot.classList.add('statusDotSuccess');
         }else{
@@ -80,7 +80,7 @@ async function authenticateTracker(){
             'Content-Type': 'application/json'
         }
     }
-    authResponse = await fetch(`http://nvmservices.ddns.net:3000/api/authenticate`, options)
+    authResponse = await fetch(`./api/authenticate`, options)
     authResponseData = await authResponse.json()
     authStatus = await authResponseData.status
 
