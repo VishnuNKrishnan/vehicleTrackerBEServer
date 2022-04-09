@@ -84,6 +84,15 @@ async function appendSTRCoords(vehicleId){
 
     const URLResponse = await fetch(`https://dev.virtualearth.net/REST/v1/Routes/SnapToRoadAsync?key=${process.env.NODE_SERVER_BING_MAPS_API_KEY}`, options)
     const URLData = await URLResponse.json()
+
+    console.log(`Coords being sent to API`)
+    console.log(coordsArrayForSTRURL)
+    console.log(`\n\n\n\n`)
+
+    if(coordsArrayForSTRURL.length < 1){
+        return  //Error handling
+    }
+
     const callBackWaitPeriod = await URLData.resourceSets[0].resources[0].callbackInSeconds
     const callbackUrl = await URLData.resourceSets[0].resources[0].callbackUrl
     //Received callbackUrl. now, fetch callbackUrl to receive resultUrl

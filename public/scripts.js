@@ -46,9 +46,7 @@ function storeAuthCredentials(){
  function deviceCompatibilityCheck(){
     const connectivityDot = document.getElementById('connectivityDot')
 
-    var geolocationObj
     var compatibility = false
-    
     var GPSAccuracy = false
 
     navigator.geolocation.getCurrentPosition(position=>{
