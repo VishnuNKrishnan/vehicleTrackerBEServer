@@ -57,7 +57,7 @@ function storeAuthCredentials(){
 
     setTimeout(()=>{
         console.log(`GPSAccuracy: ${GPSAccuracy}`)
-        if(GPSAccuracy != false && GPSAccuracy <= 30){
+        if(GPSAccuracy != false && GPSAccuracy <= 20){
             compatibility = true
         }
         if(!compatibility){
