@@ -43,24 +43,23 @@ function storeAuthCredentials(){
 
 
 
-async function deviceCompatibilityCheck(){
+ function deviceCompatibilityCheck(){
     const connectivityDot = document.getElementById('connectivityDot')
 
+    var geolocationObj
     var compatibility = false
+    
     var GPSAccuracy = false
 
-    navigator.geolocation.getCurrentPosition(setGPSAccuracy)
-
-    function setGPSAccuracy(position){
+    navigator.geolocation.getCurrentPosition(position=>{
         GPSAccuracy = position.coords.accuracy
-    }
+    })
 
-    if(GPSAccuracy != false && GPSAccuracy <= 100){
-        compatibility = true
-    }
-
-    console.log(`GPSAccuracy: ${GPSAccuracy}`)
     setTimeout(()=>{
+        console.log(`GPSAccuracy: ${GPSAccuracy}`)
+        if(GPSAccuracy != false && GPSAccuracy <= 100){
+            compatibility = true
+        }
         if(!compatibility){
             connectivityDot.classList.remove('statusDotWaiting');
             connectivityDot.classList.add('statusDotFailure');
@@ -97,7 +96,7 @@ async function authenticateTracker(){
     authResponseData = await authResponse.json()
     authStatus = await authResponseData.status
 
-    console.log(`Auth Status: ${authStatus}`)
+    //console.log(`Auth Status: ${authStatus}`)
 
     setTimeout(()=>{
         if(authStatus == 'success'){
