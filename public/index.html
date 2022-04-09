@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no">
+    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <title>Server</title>
+</head>
+<body>
+    <div class="appWrapper">
+        <div class="contentWrapper">
+            <div class="title">
+                <h2 class="mb15">Tracked Transmitter Config</h2>
+                <h3>Authentication</h3>
+            </div>
+            <div class="inputFieldsHolder">
+                <input type="text" placeholder="Account ID" id="accountIdInput"/>
+                <input type="text" placeholder="Vehicle ID" id="vehicleIdInput"/>
+                <input type="password" placeholder="Password" id="passwordInput"/>
+                <div class="buttonsHolder mb15">
+                    <button class="primaryBtn" id="authenticateBtn">
+                        <span>Authenticate</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="title">
+                <h3>Status</h3>
+            </div>
+
+            <div class="connectivityStackHolder mb15">
+                <!-- Device compatibility -->
+                <div class="conectivityItemBlock">
+                    <div class="statusDot statusDotWaiting" id="connectivityDot"></div>
+                    <div class="conectivityItemBlockLabel">
+                        <p>Compatibility</p>
+                    </div>
+                </div> 
+
+                <!-- Authentication -->
+                <div class="conectivityItemBlock">
+                    <div class="statusDot" id="authenticationDot"></div>
+                    <div class="conectivityItemBlockLabel">
+                        <p>Authentication</p>
+                    </div>
+                </div>
+
+                <!-- Server Connection -->
+                <div class="conectivityItemBlock">
+                    <div class="statusDot statusDotWaiting" id="trackingDot"></div>
+                    <div class="conectivityItemBlockLabel">
+                        <p>Tracking</p>
+                    </div>
+                </div>
+
+                <!-- Tracking active -->
+            </div>
+
+            <div class="title">
+                <h3>Location</h3>
+            </div>
+
+            <div class="locationHolder">
+                <div class="locationHolderBlock">
+                    <p class="label">LAT</p>
+                    <p class="data" id="collectedLatitude">-</p>
+                </div>
+                <div class="locationHolderBlock">
+                    <p class="label">LON</p>
+                    <p class="data" id="collectedLongitude">-</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+    <script>
+        var latitude = 25.141916;
+        var longitude = 55.587928;
+
+
+
+
+
+        //Function to check if localStorage item contains authentication data. If yes, validate. If not, return false.
+        function authDataValidate(){
+            if(!window.localStorage.getItem('authData')){
+                const authData = {
+                    accountId: "",
+                    vehicleId: "",
+                    password: "",
+                    timestamp: ""
+                }
+                window.localStorage.setItem('authData',JSON.stringify(authData));
+                return false //False, because the data created has not yet been validated.
+                //FUNCTION AWAITING COMPLETION
+            }
+        }
+        console.log(authDataValidate())
+
+
+
+
+
+        //Function to collect authentication data from localStorage
+        function getStoredAuthData(){
+            return JSON.parse(window.localStorage.getItem('authData'))
+        }
+
+
+
+
+
+        //Function to check if localStorage Item exists for array of coords. If not, create one.
+        function localStorageInit(){
+            if(!window.localStorage.getItem('coordsArray')){
+                window.localStorage.setItem('coordsArray',JSON.stringify([]));
+            }
+        }
+        localStorageInit()
+
+
+
+
+
+        //Function to append GPS coordinates and other data collected, onto the coordsArray array on localStorage
+        function addCoords(timestamp,vehicleId , lat, lon, speed, heading){
+            var currentCoordsArray = JSON.parse(window.localStorage.getItem('coordsArray'))
+            const dataToPush = {
+                timestamp: timestamp,
+                vehicleId: vehicleId,
+                latitude: lat,
+                longitude: lon,
+                speed: speed,
+                heading: heading
+            }
+
+            currentCoordsArray.push(dataToPush);
+            window.localStorage.setItem('coordsArray',JSON.stringify(currentCoordsArray));
+            console.log(`New coordinate collected:\n${JSON.stringify(dataToPush)}`)
+
+        }
+
+
+
+
+
+
+        //Function to remove coordinates till the mentioned id(timestamp) from the coordsArray array on localStorage
+        function removeCoords(timestamp){
+            var currentCoordsArray = JSON.parse(window.localStorage.getItem('coordsArray'))
+            var idExists = false //Used to ensure that the id passed exists in coordsArray. if not, the function will be aborted.
+
+            for(var i=0; i<currentCoordsArray.length; i++){
+                if(currentCoordsArray[i].timestamp==timestamp){
+                    idExists=true;
+                    break;
+                }
+            }
+
+            if(!idExists){
+                console.log(`Coords ID '${timestamp}' does not exist.`)
+                return
+            }
+            
+            if(idExists){
+                var processComplete = false
+                while(!processComplete){
+                    var deletedId = currentCoordsArray.shift();
+                    console.log(`Coords ID ${deletedId.timestamp} removed.`)
+                    if(deletedId.timestamp == timestamp){
+                        processComplete=true;
+                    }
+                    
+                }
+            }
+            window.localStorage.setItem('coordsArray',JSON.stringify(currentCoordsArray));
+        }
+        
+
+
+
+
+        //Function to collect GPS data and save it to coordsArray on localStorage
+        async function trackMe(){
+            navigator.geolocation.getCurrentPosition(position => {
+             addCoords(
+                 position.timestamp, 
+                 getStoredAuthData().vehicleId, 
+                 position.coords.latitude, 
+                 position.coords.longitude, 
+                 position.coords.speed, 
+                 position.coords.heading)
+            })
+        }
+        setInterval(trackMe, 10000)
+
+
+
+
+        //Function to send collected wayPoints to tracking server
+        function updateWaypointsAPI()
+        {
+            // console.log('Tracking service initiated...')
+            console.log(Geolocation in navigator)
+            //Only for test
+            var coords = latitude + "," + longitude;
+            console.log(coords);
+
+            const data = window.localStorage.getItem('coordsArray')
+            const options = {
+                method: 'POST',
+                body: data, //Do not use JSON.stringify, as data loaded from local storage is already a string
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            const response = fetch('http://nvmservices.ddns.net:3000/api/addWayPoints', options).then(response => response.json()).then(data => removeCoords(data.lastIdAdded))
+        }
+
+
+        //Every 10 seconds, check if coordsArray on local storage has equal to or more than 10 items. if it does, send them to the API. Call the removeCoords() function if the response code is 200 and has provided the id(timestamp) of the last coods updated on the server.
+        setInterval(()=>{
+            var coordsArray = JSON.parse(window.localStorage.getItem('coordsArray'))
+            if(coordsArray.length >= 10){
+                updateWaypointsAPI();
+            }
+        },10000);
+
+        
+    </script>
+</body>
+</html>
