@@ -43,15 +43,17 @@ function storeAuthCredentials(){
 
 
 
-function deviceCompatibilityCheck(){
+async function deviceCompatibilityCheck(){
     const connectivityDot = document.getElementById('connectivityDot')
 
     var compatibility = false
     var GPSAccuracy = false
 
-    navigator.geolocation.getCurrentPosition(position=>{
+    navigator.geolocation.getCurrentPosition(setGPSAccuracy)
+
+    function setGPSAccuracy(position){
         GPSAccuracy = position.coords.accuracy
-    })
+    }
 
     if(GPSAccuracy != false && GPSAccuracy <= 100){
         compatibility = true
