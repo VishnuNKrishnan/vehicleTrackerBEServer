@@ -87,6 +87,7 @@ async function authenticateTracker(manual = false){
             window.localStorage.setItem('coordsArray', (JSON.stringify(storedCoordsArray, null, 4)))
         }
         console.log('Authentication aborted: Please fill in all the fields')
+        updateWaypointsAPI()
         return
     }
 

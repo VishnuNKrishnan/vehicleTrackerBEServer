@@ -10,8 +10,6 @@ const db = admin.firestore()
 
 //---------------------
 
-const fs = require('fs')
-
 //Function to open a new document for a tracker that calls the addWayPoints endpoint (if the document does not already exist), and add the following:
 async function addWayPointsToDB(wayPointsArray){
     
