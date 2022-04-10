@@ -96,6 +96,7 @@ async function authenticateTracker(manual = false){
 
     //console.log(`Auth Status: ${authStatus}`)
 
+    checkTrackingStatus(manual)
     setTimeout(()=>{
         if(authStatus == 'success'){
             authenticationDot.classList.remove('statusDotWaiting');
@@ -103,7 +104,6 @@ async function authenticateTracker(manual = false){
             if(manual){
                 const emptyCoordsArrayForLocalStorage = []
                 window.localStorage.setItem('coordsArray', JSON.stringify(emptyCoordsArrayForLocalStorage, null, 4))
-                checkTrackingStatus()
             }
         }else{
             authenticationDot.classList.remove('statusDotWaiting');
@@ -115,8 +115,12 @@ authenticateTracker()
 
 var trackingStatus = false
 
-function checkTrackingStatus(){
+function checkTrackingStatus(manual=false){
     const trackingDot = document.getElementById('trackingDot')
+    if(manual){
+        trackingDot.classList.contains('statusDotFailure') ? trackingDot.classList.remove('statusDotFailure') : trackingDot.classList.remove('statusDotSuccess')
+        trackingDot.classList.add('statusDotWaiting');
+    }
     var existingCoords
     if(window.localStorage.getItem('coordsArray') != null && window.localStorage.getItem('coordsArray') != undefined){
         existingCoords = window.localStorage.getItem('coordsArray')
