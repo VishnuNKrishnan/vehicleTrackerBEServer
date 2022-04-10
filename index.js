@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 
 app.use(express.static('public'));
-app.use(express.json())
+app.use(express.json({ limit: 1000 }))
 
 //API Endpoint for onboard device to authenticate. ADD CODE TO CHECK WITH DATABASE
 app.post('/api/authenticate', (request, response) => {
