@@ -17,9 +17,11 @@ app.use(express.json({ limit: 100000 }))
 
 //API Endpoint for onboard device to authenticate. ADD CODE TO CHECK WITH DATABASE
 app.post('/api/authenticate', (request, response) => {
-    
-    console.log(`\n\n\n\nNew authentication request from vehicleId: ${request.body.vehicleId}\n\n\n\n`)
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`New authentication request from vehicleId: ${request.body.vehicleId}`)
     var responseForClient = {request: request.body, status: 'success'}
+    console.log(`Authentication Status for ${request.body.vehicleId}: ${responseForClient.status}`)
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.json(responseForClient)
     response.end()
 });
