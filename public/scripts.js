@@ -43,7 +43,7 @@ function storeAuthCredentials(){
 
 
 
- function deviceCompatibilityCheck(){
+ function deviceAccuracyCheck(){
     const connectivityDot = document.getElementById('connectivityDot')
 
     var compatibility = false
@@ -67,7 +67,9 @@ function storeAuthCredentials(){
         }
     },3000)
 }
-deviceCompatibilityCheck()
+deviceAccuracyCheck()
+
+setInterval(deviceAccuracyCheck(),10000)
 
 document.getElementById('authenticateBtn').addEventListener('click', ()=>{
     storeAuthCredentials()
