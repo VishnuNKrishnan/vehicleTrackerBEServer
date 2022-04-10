@@ -39,6 +39,11 @@ async function addWayPointsToDB(wayPointsArray){
         db.collection('vehicles').doc(wayPointsArray[0].vehicleId).set(templateForNewFile)
         //New blank document created successfully
         
+        //Return the id(timestamp) of the last waypoint added. The tracker will erase all the collected coords till this ID from its memory when lasetIdAdded is received
+        var indexOfLastCoords = wayPointsArray.length-1
+        var returnData = {lastIdAdded: wayPointsArray[indexOfLastCoords].timestamp}
+        //console.log(JSON.stringify(wayPointsArray.slice(-1)[0].timestamp))
+        return returnData
         
     }else{
         
