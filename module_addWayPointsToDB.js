@@ -27,12 +27,14 @@ async function addWayPointsToDB(wayPointsArray){
             snapToRoadComplete: false,
             lastSnappedToRoadId: null, //id(timestamp) of the last coord sent for snap to road service
             providedWayPoints: [], //wayPoints sent by the tracker. Saved in the format as required by the STR service - {latitude: 12.25411, longitude: 45.36258}
+            speedArray: [], //array of speeds sent in the request body
             SSRWayPoints: [], //wayPoints given by Snap To Road service
             identifiedLocations: [] //Array of reverse geocoded locations
         }
 
         wayPointsArray.map(obj=>{
             templateForNewFile.providedWayPoints.push({latitude: obj.latitude, longitude: obj.longitude})
+            templateForNewFile.speedArray.push({speed: obj.speed})
         })
         db.collection('vehicles').doc(wayPointsArray[0].vehicleId).set(templateForNewFile)
         //New blank document created successfully
@@ -47,6 +49,7 @@ async function addWayPointsToDB(wayPointsArray){
         
         wayPointsArray.map(obj=>{
             vehicleDataObject.providedWayPoints.push({latitude: obj.latitude, longitude: obj.longitude})
+            vehicleDataObject.speedArray.push({speed: obj.speed})
         })  
         db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update(vehicleDataObject)
         //Document updated successfully
