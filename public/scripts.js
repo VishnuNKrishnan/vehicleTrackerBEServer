@@ -77,14 +77,20 @@ document.getElementById('authenticateBtn').addEventListener('click', ()=>{
 
 
 async function authenticateTracker(manual = false){
-    const storedAuthData = (JSON.parse(window,localStorage.getItem('authData')))
-    if(storedAuthData.accountId == "" || storedAuthData.accountId == "" || storedAuthData.accountId == ""){
+    const authenticationDot = document.getElementById('authenticationDot')
+    const storedAuthData = (JSON.parse(window.localStorage.getItem('authData')))
+    if(storedAuthData.accountId == "" || storedAuthData.vehicleId == "" || storedAuthData.password == ""){
+        authenticationDot.classList.add('statusDotFailure');
+        var storedCoordsArray = JSON.parse(window.localStorage.getItem('coordsArray'))
+        if(storedCoordsArray){
+            storedCoordsArray = []
+            window.localStorage.setItem('coordsArray', (JSON.stringify(storedCoordsArray, null, 4)))
+        }
         console.log('Authentication aborted: Please fill in all the fields')
         return
     }
 
 
-    const authenticationDot = document.getElementById('authenticationDot')
     authenticationDot.classList.add('statusDotWaiting');
 
     const data = window.localStorage.getItem('authData')
