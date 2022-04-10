@@ -191,7 +191,7 @@
                  position.coords.longitude, 
                  position.coords.speed, 
                  position.coords.heading)
-            })
+            }, err=>{console.log(err)}, { enableHighAccuracy: true })
         }
         setInterval(trackMe, 2000)
 
