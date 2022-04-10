@@ -77,6 +77,13 @@ document.getElementById('authenticateBtn').addEventListener('click', ()=>{
 
 
 async function authenticateTracker(manual = false){
+    const storedAuthData = (JSON.parse(window,localStorage.getItem('authData')))
+    if(storedAuthData.accountId == "" || storedAuthData.accountId == "" || storedAuthData.accountId == ""){
+        console.log('Authentication aborted: Please fill in all the fields')
+        return
+    }
+
+
     const authenticationDot = document.getElementById('authenticationDot')
     authenticationDot.classList.add('statusDotWaiting');
 
