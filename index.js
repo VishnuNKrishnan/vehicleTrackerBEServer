@@ -8,7 +8,7 @@ app.use(cors())
 const fs = require('fs');
 const appendSTRCoords = require('./module_appendSTRCoords')
 
-const addWayPointsToFile = require('./module_addWayPointsToFile')
+const addWayPointsToDB = require('./module_addWayPointsToDB')
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 
@@ -22,20 +22,21 @@ app.post('/api/authenticate', (request, response) => {
     var responseForClient = {request: request.body, status: 'success'}
     response.json(responseForClient)
     response.end()
-
-
-    appendSTRCoords.appendSTRCoords(request.body[0].vehicleId)
 });
 
 //API Endpoint for onboard device to add waypoint
-app.post('/api/addWayPoints', (request, response) => {
-    console.log(`\n\n\n\nNew wayPoints given by vehicleId: ${request.body.vehicleId}`)
-    console.log(request.body)
-    console.log(`\n\n\n\n`)
-    var responseForClient = addWayPointsToFile.addWayPointsToFile(request.body)
-    response.json(responseForClient)
+app.post('/api/addWayPoints', async (request, response) => {
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`New wayPoints given by vehicleId: ${request.body[0].vehicleId}`)
+    console.log(`Number of coords in the request: ${request.body.length}`)
+    var responseForClientObject = await addWayPointsToDB.addWayPointsToDB(request.body)
+    console.log(`responseForClientObject:`)
+    console.log(responseForClientObject)
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`\n\n\n`)
+    response.json(responseForClientObject)
     response.end()
 
 
-    appendSTRCoords.appendSTRCoords(request.body[0].vehicleId)
+    //appendSTRCoords.appendSTRCoords(request.body[0].vehicleId)
 });

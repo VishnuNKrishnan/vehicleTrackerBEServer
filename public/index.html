@@ -202,13 +202,9 @@
 
 
         //Function to send collected wayPoints to tracking server
-        function updateWaypointsAPI()
+        async function updateWaypointsAPI()
         {
-            // console.log('Tracking service initiated...')
-            console.log(Geolocation in Navigator)
-            //Only for test
-            var coords = latitude + "," + longitude;
-            console.log(coords);
+            console.log('Sending coords to server...')
 
             const data = window.localStorage.getItem('coordsArray')
             const options = {
@@ -218,7 +214,12 @@
                     'Content-Type': 'application/json'
                 }
             }
-            const response = fetch('./api/addWayPoints', options).then(response => response.json()).then(data => removeCoords(data.lastIdAdded))
+            const response = await fetch('./api/addWayPoints', options)
+            const responseJSON = await response.json()
+            console.log(responseJSON)
+
+            //Remove sent coords from localStorage
+            removeCoords(responseJSON.lastIdAdded)
         }
 
 

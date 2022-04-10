@@ -1,3 +1,15 @@
+// //GoogleFirestore Initialization
+// //Refer: https://www.youtube.com/watch?v=Z87OZtIYC_0
+
+// const admin = require('firebase-admin')
+// const serviceAccount = require('./firestoreServiceAccountKey.json')
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount)
+// })
+// const db = admin.firestore()
+
+// //---------------------
+
 const fs = require('fs')
 const { default: fetch } = require('node-fetch');
 
@@ -11,13 +23,16 @@ async function appendSTRCoords(vehicleId){
     if(!fs.existsSync(`./activeClientRecords/activeClientSTRRecords/${vehicleId}.json`)){
         const templateForNewFile = {
             vehicleId: vehicleId,
+            collectedCoords: [], //Coords provided by the GPS tracker
             STRCoords: [] //Array of coords Snapped to road. Received from Bing STR API.
         }
-        fs.writeFileSync(`./activeClientRecords/activeClientSTRRecords/${vehicleId}.json`, JSON.stringify(templateForNewFile, null, 4))
+        //fs.writeFileSync(`./activeClientRecords/activeClientSTRRecords/${vehicleId}.json`, JSON.stringify(templateForNewFile, null, 4))
+        db.collection('vehicles').doc(vehicleId).set(templateForNewFile)
         //New blank file created successfully
     }
 
-    const vehicleDataObject = JSON.parse(fs.readFileSync(`./activeClientRecords/${vehicleId}.json`))
+    //const vehicleDataObject = JSON.parse(fs.readFileSync(`./activeClientRecords/${vehicleId}.json`))
+    const vehicleDataObject = await db.collection('vehicles').doc(vehicleId).get()
     const lastSnappedToRoadId = vehicleDataObject.lastSnappedToRoadId
 
     //Find the index of the object with the last snapped id in the coordsArray object in the main file. Search backwards to find element faster.
