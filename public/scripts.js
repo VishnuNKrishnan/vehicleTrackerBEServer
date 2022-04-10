@@ -71,12 +71,12 @@ deviceCompatibilityCheck()
 
 document.getElementById('authenticateBtn').addEventListener('click', ()=>{
     storeAuthCredentials()
-    authenticateTracker()
+    authenticateTracker(true) //Parameter: manual. Set to true if authentication is manually triggered. When true, localStorage CoordsArray will be emptied upon authentication.
 })
 
 
 
-async function authenticateTracker(){
+async function authenticateTracker(manual = false){
     const authenticationDot = document.getElementById('authenticationDot')
     authenticationDot.classList.add('statusDotWaiting');
 
@@ -100,6 +100,10 @@ async function authenticateTracker(){
         if(authStatus == 'success'){
             authenticationDot.classList.remove('statusDotWaiting');
             authenticationDot.classList.add('statusDotSuccess');
+            if(manual){
+                const emptyCoordsArrayForLocalStorage = []
+                window.localStorage.setItem('coordsArray', JSON.stringify(emptyCoordsArrayForLocalStorage, null, 4))
+            }
         }else{
             authenticationDot.classList.remove('statusDotWaiting');
             authenticationDot.classList.add('statusDotFailure');
