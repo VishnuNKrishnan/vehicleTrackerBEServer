@@ -103,6 +103,7 @@ async function authenticateTracker(manual = false){
             if(manual){
                 const emptyCoordsArrayForLocalStorage = []
                 window.localStorage.setItem('coordsArray', JSON.stringify(emptyCoordsArrayForLocalStorage, null, 4))
+                checkTrackingStatus()
             }
         }else{
             authenticationDot.classList.remove('statusDotWaiting');
