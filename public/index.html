@@ -224,7 +224,7 @@
         //Every 10 seconds, check if coordsArray on local storage has equal to or more than 10 items. if it does, send them to the API. Call the removeCoords() function if the response code is 200 and has provided the id(timestamp) of the last coods updated on the server.
         setInterval(()=>{
             var coordsArray = JSON.parse(window.localStorage.getItem('coordsArray'))
-            if(coordsArray.length >= 50){
+            if(coordsArray.length >= 10){
                 updateWaypointsAPI();
             }
         },10000);
