@@ -163,7 +163,7 @@ function updateCoordsOnUI(){
     var UILon = document.getElementById('collectedLongitude')
     if(trackingStatus = true){
         setInterval(async ()=>{
-            navigator.geolocation.getCurrentPosition(position => {
+            navigator.geolocation.watchPosition(position => {
                 UILat.textContent = `${position.coords.latitude}`
                 UILon.textContent = `${position.coords.longitude}`
             })
