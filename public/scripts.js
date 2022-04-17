@@ -106,7 +106,7 @@ async function authenticateTracker(manual = false){
             'Content-Type': 'application/json'
         }
     }
-    authResponse = await fetch(`./api/authenticate`, options)
+    authResponse = await fetch(`./api/authenticate`, options).catch(err=>console.log(err))
     authResponseData = await authResponse.json()
     authStatus = await authResponseData.status
 

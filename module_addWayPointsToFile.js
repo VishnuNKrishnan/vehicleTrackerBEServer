@@ -1,16 +1,14 @@
-//GoogleFirestore Initialization
-//Refer: https://www.youtube.com/watch?v=Z87OZtIYC_0
+// //GoogleFirestore Initialization
+// //Refer: https://www.youtube.com/watch?v=Z87OZtIYC_0
 
-const admin = require('firebase-admin')
-const serviceAccount = require('./firestoreServiceAccountKey.json')
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-})
-const db = admin.firestore()
+// const admin = require('firebase-admin')
+// const serviceAccount = require('./firestoreServiceAccountKey.json')
+// admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount)
+// })
+// const db = admin.firestore()
 
-//---------------------
-
-const fs = require('fs')
+// //---------------------
 
 //Function to open a new file for a tracker that calls the addWayPoints endpoint (if the file does not already exist), and add the following:
 function addWayPointsToFile(wayPointsArray){
