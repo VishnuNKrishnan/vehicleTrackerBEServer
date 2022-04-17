@@ -1,5 +1,5 @@
 const express = require('express');
-app = express();
+const app = express();
 require('dotenv').config();
 
 var cors = require('cors')
@@ -10,7 +10,8 @@ app.use(cors())
 //const appendSTRCoords = require('./module_appendSTRCoords')
 const authenticateTracker = require(`./module_authenticateTracker`)
 
-const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
+const addWayPointsToDB = require('./module_addWayPointsToDB_v2');
+//const { app } = require('firebase-admin');
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 

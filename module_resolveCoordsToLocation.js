@@ -3,6 +3,7 @@ const { default: fetch } = require('node-fetch')
 require('dotenv').config();
 
 async function resolveCoords(coords, timestamp = null, vehicleId){ //Coords accepted as array. eg: [25.20214,55.23652]
+//Accepted timestamp parameter needs the timestamp of vehicle presence at the location
 
     const latitude = coords[0]
     const longitude = coords[1]
@@ -40,7 +41,10 @@ async function resolveCoords(coords, timestamp = null, vehicleId){ //Coords acce
         openCageResponseJSON.timestampOfVehiclePresence = timestamp
     }
 
-    db.collection('vehicles').doc(`v2Test3`).collection('identifiedLocations').doc(JSON.stringify(Date.now())).set(openCageResponseJSON)
+    db.collection('vehicles').doc(vehicleId).collection('identifiedLocations').doc(JSON.stringify(Date.now())).set(openCageResponseJSON)
+    db.collection('vehicles').doc(vehicleId).update({unresolvedCoordsCount: 0})
 }
 
-resolveCoords([24.636306, 54.730126], `v2Test3`)
+module.exports = { resolveCoords }
+
+//resolveCoords([49.234757, -123.174800], null, `v2Test3`)
