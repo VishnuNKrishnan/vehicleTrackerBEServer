@@ -41,6 +41,7 @@ async function linkTrackerWithAccount(accountId, vehicleId){
             driverName: "",
             driverContact: "",
             displayPictureBase64: "",
+            lastRecordedSpeed: null,
             registeredAccountId: accountId,
             unresolvedCoordsCount: 0,
             lastOnline: null,

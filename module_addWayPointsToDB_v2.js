@@ -39,7 +39,7 @@ async function addWayPointsToDB(wayPointsArray){
     currentUnresolvedCoordsCount += newCoordsCount
     //console.log(vehicleData.data().unresolvedCoordsCount);
     //console.log(currentUnresolvedCoordsCount);
-    db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({unresolvedCoordsCount: currentUnresolvedCoordsCount, lastOnline: Date.now()})
+    db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({unresolvedCoordsCount: currentUnresolvedCoordsCount, lastOnline: Date.now(), lastRecordedSpeed: wayPointsArray[wayPointsArray.length - 1].speed})
 
     if(currentUnresolvedCoordsCount >= 150){
         const lastLatitude = wayPointsArray[wayPointsArray.length - 1].latitude
