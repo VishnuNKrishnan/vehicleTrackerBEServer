@@ -9,8 +9,8 @@ app.use(cors())
 
 //const appendSTRCoords = require('./module_appendSTRCoords')
 const authenticateTracker = require(`./module_authenticateTracker`)
-
-const addWayPointsToDB = require('./module_addWayPointsToDB_v2');
+const linkTrackerWithAccount = require(`./module_linkTrackerWithAccount`)
+const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
 //const { app } = require('firebase-admin');
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
@@ -18,12 +18,23 @@ app.listen(port, () => console.log(`Vehicle tracking server activated.\nListenin
 app.use(express.static('public'));
 app.use(express.json({ limit: 100000 }))
 
+//API Endpoint to register new tracker/vehicle (trackerId and vehicleId are the same. The name has been interchangeably used.)
+app.get('/api/registerNewTracker', (request, response) => {
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(Date());
+    console.log(`New Tracker-Account-Linking request received...\n`);
+    linkTrackerWithAccount.linkTrackerWithAccount(1212621,`526-965-856-632`)
+    //console.log(`New tracker registration request from: ${request.body.vehicleId}`);
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    response.end()
+})
+
 //API Endpoint for onboard device to authenticate. ADD CODE TO CHECK WITH DATABASE
-app.post('/api/authenticate', (request, response) => {
+app.post('/api/authenticate', async (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(Date());
     console.log(`New authentication request from vehicleId: ${request.body.vehicleId}`)
-    var responseForClient = {request: request.body, status: 'success'}
+    var responseForClient = await authenticateTracker.authenticateTracker(request.body)
     console.log(`Authentication Status for ${request.body.vehicleId}: ${responseForClient.status}`)
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.json(responseForClient)

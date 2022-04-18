@@ -12,8 +12,49 @@ window.addEventListener('load', function(){
     vehicleIdInput.value = storedCredentials.vehicleId
     passwordInput.value = storedCredentials.password
 
+    toggleAuthenticateBtn()
+    if(!emptyAuthenticationFieldsExist()){
+        authenticateTracker()
+    }
     //console.log('done')
+    deviceAccuracyCheck()
 })
+
+document.getElementById('accountIdInput').addEventListener('keyup', function(){
+    toggleAuthenticateBtn()
+})
+document.getElementById('vehicleIdInput').addEventListener('keyup', function(){
+    toggleAuthenticateBtn()
+})
+document.getElementById('passwordInput').addEventListener('keyup', function(){
+    toggleAuthenticateBtn()
+})
+
+
+
+function emptyAuthenticationFieldsExist(){
+    const accountIdInput = document.getElementById('accountIdInput')
+    const vehicleIdInput = document.getElementById('vehicleIdInput')
+    const passwordInput = document.getElementById('passwordInput')
+
+    if(accountIdInput.value == "" || vehicleIdInput.value == "" || passwordInput.value == ""){
+        return true
+    }else{
+        return false
+    }
+}
+
+
+
+
+function toggleAuthenticateBtn(){
+    const authenticateBtn = document.getElementById('authenticateBtn')
+    if(emptyAuthenticationFieldsExist()){
+        authenticateBtn.setAttribute('disabled', true)
+    }else{
+        authenticateBtn.removeAttribute('disabled')
+    }
+}
 
 
 
@@ -67,7 +108,6 @@ function storeAuthCredentials(){
         }
     },3000)
 }
-deviceAccuracyCheck()
 
 setInterval(deviceAccuracyCheck(),10000)
 
@@ -93,7 +133,6 @@ async function authenticateTracker(manual = false){
         return
     }
 
-
     authenticationDot.classList.add('statusDotWaiting');
 
     const data = window.localStorage.getItem('authData')
@@ -106,16 +145,19 @@ async function authenticateTracker(manual = false){
             'Content-Type': 'application/json'
         }
     }
-    authResponse = await fetch(`./api/authenticate`, options).catch(err=>console.log(err))
-    authResponseData = await authResponse.json()
-    authStatus = await authResponseData.status
+    const authResponse = await fetch(`./api/authenticate`, options).catch(err=>console.log(err))
+    const authResponseData = await authResponse.json()
+    const authStatus = authResponseData.status
+    const authMessage = authResponseData.message
 
-    //console.log(`Auth Status: ${authStatus}`)
+    console.log(`Auth Status: ${authStatus}`)
+    console.log(`Auth Message: ${authMessage}`)
 
     checkTrackingStatus(manual)
     setTimeout(()=>{
         if(authStatus == 'success'){
             authenticationDot.classList.remove('statusDotWaiting');
+            authenticationDot.classList.remove('statusDotFailure');
             authenticationDot.classList.add('statusDotSuccess');
             if(manual){
                 const emptyCoordsArrayForLocalStorage = []
@@ -127,7 +169,6 @@ async function authenticateTracker(manual = false){
         }
     },2000)
 }
-authenticateTracker()
 
 var trackingStatus = false
 
