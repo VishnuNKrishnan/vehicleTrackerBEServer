@@ -41,6 +41,7 @@ async function resolveCoords(coords, timestamp = null, vehicleId){ //Coords acce
         openCageResponseJSON.timestampOfVehiclePresence = timestamp
     }
 
+    db.collection('vehicles').doc(wayPointsArray[0].vehicleId).collection('identifiedLocations').doc('TODELETE').delete()
     db.collection('vehicles').doc(vehicleId).collection('identifiedLocations').doc(JSON.stringify(Date.now())).set(openCageResponseJSON)
     db.collection('vehicles').doc(vehicleId).update({unresolvedCoordsCount: 0})
 }
