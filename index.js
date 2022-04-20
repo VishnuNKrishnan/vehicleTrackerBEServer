@@ -23,7 +23,7 @@ app.get('/api/registerNewTracker', (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(Date());
     console.log(`New Tracker-Account-Linking request received...\n`);
-    linkTrackerWithAccount.linkTrackerWithAccount(1212621,`526-965-856-632`)
+    linkTrackerWithAccount.linkTrackerWithAccount(1212621,`222-111-232-220`)
     //console.log(`New tracker registration request from: ${request.body.vehicleId}`);
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.end()
