@@ -10,13 +10,26 @@ app.use(cors())
 //const appendSTRCoords = require('./module_appendSTRCoords')
 const authenticateTracker = require(`./module_authenticateTracker`)
 const linkTrackerWithAccount = require(`./module_linkTrackerWithAccount`)
-const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
+const addWayPointsToDB = require('./module_addWayPointsToDB_v2');
+const authenticateWebApp = require('./module_authenticateWebApp')
+const { request } = require('express');
 //const { app } = require('firebase-admin');
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 
 app.use(express.static('public'));
 app.use(express.json({ limit: 100000 }))
+
+//API Endpoint for monitor app to authenticate accounts.
+app.post('/app/authenticateAccount', async (request, response) => {
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(Date());
+    console.log(`New web app authentication request received...\n`);
+    const responseForClient = await authenticateWebApp.authenticateWebApp(request.body)
+    console.log(responseForClient);
+    response.json(responseForClient)
+    response.end()
+})
 
 //API Endpoint to register new tracker/vehicle (trackerId and vehicleId are the same. The name has been interchangeably used.)
 app.get('/api/registerNewTracker', (request, response) => {
@@ -29,7 +42,7 @@ app.get('/api/registerNewTracker', (request, response) => {
     response.end()
 })
 
-//API Endpoint for onboard device to authenticate. ADD CODE TO CHECK WITH DATABASE
+//API Endpoint for onboard device to authenticate.
 app.post('/api/authenticate', async (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(Date());
