@@ -212,7 +212,7 @@
                     'Content-Type': 'application/json'
                 }
             }
-            const response = await fetch('./api/addWayPoints', options)
+            const response = await fetch('./api/addWayPoints', options).catch(err=>console.error('Coords not sent to server due to network error. Will automatically retry in some time.'))
             const responseJSON = await response.json()
             console.log(responseJSON)
 
@@ -221,11 +221,47 @@
         }
 
 
+
+
+        //Function to send collected wayPoints AS SMALLER CHUNKS to tracking server
+        async function breakAndUpdateWaypointsAPI()
+        {
+            console.log('Sending coords to server as broken chunks...')
+
+            const data = JSON.parse(window.localStorage.getItem('coordsArray'))
+            var dataChunkArray = []
+
+            for(var i = 0; i<99 ; i++){
+                dataChunkArray.push(data[i])
+            }
+
+            console.log(dataChunkArray);
+
+            //const dataArray = window.localStorage.getItem('coordsArray')
+            const options = {
+                method: 'POST',
+                body: JSON.stringify(dataChunkArray), //Do not use JSON.stringify, as data loaded from local storage is already a string
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+            const response = await fetch('./api/addWayPoints', options).catch(err=>console.error('Coords not sent to server due to network error. Will automatically retry in some time.'))
+            const responseJSON = await response.json()
+            console.log(responseJSON)
+
+            //Remove sent coords from localStorage
+            removeCoords(responseJSON.lastIdAdded)
+        }
+
+
+
         //Every 10 seconds, check if coordsArray on local storage has equal to or more than 10 items. if it does, send them to the API. Call the removeCoords() function if the response code is 200 and has provided the id(timestamp) of the last coods updated on the server.
         setInterval(()=>{
             var coordsArray = JSON.parse(window.localStorage.getItem('coordsArray'))
-            if(coordsArray.length >= 10){
+            if(coordsArray.length >= 10 && coordsArray.length < 100){
                 updateWaypointsAPI();
+            } else if(coordsArray.length >= 100){
+                breakAndUpdateWaypointsAPI()
             }
         },10000);
 
