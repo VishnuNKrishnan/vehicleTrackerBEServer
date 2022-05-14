@@ -25,6 +25,8 @@ async function resolveCoords(coords, timestamp = null, vehicleId){ //Coords acce
         console.log(`CITY: ${openCageResponseJSON.results[0].components.city}`)
         console.log(`STATE: ${openCageResponseJSON.results[0].components.state}`)
         console.log(`COUNTRY: ${openCageResponseJSON.results[0].components.country}`)
+        console.log(`ROAD: ${openCageResponseJSON.results[0].components.road}`)
+        console.log(`ROAD REFERENCE: ${openCageResponseJSON.results[0].components.road_reference}`)
         console.log(`--------------------------------`)
         console.log(`API LIMIT: ${openCageResponseJSON.rate.limit}`)
         console.log(`API REMAINING: ${openCageResponseJSON.rate.remaining}`)
