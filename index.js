@@ -10,8 +10,9 @@ app.use(cors())
 //const appendSTRCoords = require('./module_appendSTRCoords')
 const authenticateTracker = require(`./module_authenticateTracker`)
 const linkTrackerWithAccount = require(`./module_linkTrackerWithAccount`)
-const addWayPointsToDB = require('./module_addWayPointsToDB_v2');
+const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
 const authenticateWebApp = require('./module_authenticateWebApp')
+const getVisitedLocations = require('./module_getVisitedLocations')
 const { request } = require('express');
 //const { app } = require('firebase-admin');
 const port = process.env.PORT || 3001
@@ -26,8 +27,21 @@ app.post('/app/authenticateAccount', async (request, response) => {
     console.log(Date());
     console.log(`New web app authentication request received...\n`);
     const responseForClient = await authenticateWebApp.authenticateWebApp(request.body)
-    console.log(responseForClient);
+    console.log(responseForClient)
     response.json(responseForClient)
+    response.end()
+})
+
+//API Endpoint to get the visited Locations on a particular date for a particular vehicleId. Used by component VisitedLocationsList.jsx on the frontend.
+app.post('/app/getVisitedLocations', async (request, response) => {
+
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`New request to collect visited locations...`)
+    console.log(request.body)
+    const responseForClient = await getVisitedLocations.getVisitedLocations(request.body.vehicleId, request.body.journeyStartDate, request.body.journeyEndDate)
+    console.log(`Number of results collected and sent: ${responseForClient.length}`)
+    response.json(responseForClient)
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.end()
 })
 
