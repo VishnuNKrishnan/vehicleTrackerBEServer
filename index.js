@@ -37,12 +37,24 @@ app.post('/app/getVisitedLocations', async (request, response) => {
 
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(`New request to collect visited locations...`)
-    console.log(request.body)
+    console.log(`Vehicle ID: ${request.body.vehicleId}`)
+    console.log(`Journey Start Date: ${Date(request.body.journeyStartDate)}`)
+    console.log(`Journey End Date: ${Date(request.body.journeyEndDate)}`)
     const responseForClient = await getVisitedLocations.getVisitedLocations(request.body.vehicleId, request.body.journeyStartDate, request.body.journeyEndDate)
     console.log(`Number of results collected and sent: ${responseForClient.length}`)
     response.json(responseForClient)
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.end()
+})
+
+//API Endpoint to get the coordinates of all the waypoints travelled by a particular vehicleId from a specified start date to end date. Used by component MapHolder.jsx on the front end app.
+//INCOMPLETE FUNCTION
+app.post(`/app/getWayPoints`, async (request, response) => {
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`New request to collect Waypoints...`)
+    console.log(`Vehicle ID: ${request.body.vehicleId}`)
+    console.log(`Journey Start Date: ${Date(request.body.journeyStartDate)}`)
+    console.log(`Journey End Date: ${Date(request.body.journeyEndDate)}`)
 })
 
 //API Endpoint to register new tracker/vehicle (trackerId and vehicleId are the same. The name has been interchangeably used.)

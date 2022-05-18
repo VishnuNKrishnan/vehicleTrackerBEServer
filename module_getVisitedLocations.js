@@ -1,4 +1,5 @@
 const db = require('./module_initializeFirebase')
+const getFormattedLocation = require('./submodule_getFormattedLocation')
 
 async function getVisitedLocations(vehicleId, journeyStartDateTimestamp, journeyEndDateTimestamp = null){
     returnData = [] //Array of visited location objects as received from db.
@@ -9,8 +10,12 @@ async function getVisitedLocations(vehicleId, journeyStartDateTimestamp, journey
     const vehicleIdData = await vehicleIdRef.where('timestampOfVehiclePresence', '>=', journeyStartDateTimestamp).where('timestampOfVehiclePresence', '<=', journeyEndDateTimestamp).get()
     vehicleIdData.forEach(doc => {
         //console.log(doc.id, '=>', doc.data());
-        if(returnData[returnData.length-1] != doc.data()){
+        if(returnData.length == 0){
             returnData.push(doc.data())
+        }else{
+            if(getFormattedLocation.getFormattedLocation(returnData[returnData.length-1]).mainLocation != getFormattedLocation.getFormattedLocation(doc.data()).mainLocation){
+                returnData.push(doc.data())
+            }
         }
       })
 
