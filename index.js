@@ -13,8 +13,9 @@ const linkTrackerWithAccount = require(`./module_linkTrackerWithAccount`)
 const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
 const authenticateWebApp = require('./module_authenticateWebApp')
 const getVisitedLocations = require('./module_getVisitedLocations')
+const getWaypointCoords = require('./module_getWayPointCoords')
+
 const { request } = require('express');
-//const { app } = require('firebase-admin');
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 
@@ -38,8 +39,8 @@ app.post('/app/getVisitedLocations', async (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(`New request to collect visited locations...`)
     console.log(`Vehicle ID: ${request.body.vehicleId}`)
-    console.log(`Journey Start Date: ${Date(request.body.journeyStartDate)}`)
-    console.log(`Journey End Date: ${Date(request.body.journeyEndDate)}`)
+    console.log(`Journey Start Date: ${Date(JSON.stringify(request.body.journeyStartDate))}`)
+    console.log(`Journey End Date: ${Date(JSON.stringify(request.body.journeyEndDate))}`)
     const responseForClient = await getVisitedLocations.getVisitedLocations(request.body.vehicleId, request.body.journeyStartDate, request.body.journeyEndDate)
     console.log(`Number of results collected and sent: ${responseForClient.length}`)
     response.json(responseForClient)
@@ -53,8 +54,13 @@ app.post(`/app/getWayPoints`, async (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(`New request to collect Waypoints...`)
     console.log(`Vehicle ID: ${request.body.vehicleId}`)
-    console.log(`Journey Start Date: ${Date(request.body.journeyStartDate)}`)
-    console.log(`Journey End Date: ${Date(request.body.journeyEndDate)}`)
+    console.log(`Journey Start Date: ${Date(JSON.stringify(request.body.journeyStartDate))}`)
+    console.log(`Journey End Date: ${Date(JSON.stringify(request.body.journeyEndDate))}`)
+    const responseForClient = await getWaypointCoords.getWayPointCoords(request.body.vehicleId, request.body.journeyStartDate, request.body.journeyEndDate)
+    console.log(`Number of Waypoints collected and sent: ${responseForClient.length}`)
+    response.json(responseForClient)
+    response.end()
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
 })
 
 //API Endpoint to register new tracker/vehicle (trackerId and vehicleId are the same. The name has been interchangeably used.)

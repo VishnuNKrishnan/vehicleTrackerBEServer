@@ -2,7 +2,7 @@ const db = require('./module_initializeFirebase')
 const getFormattedLocation = require('./submodule_getFormattedLocation')
 
 async function getVisitedLocations(vehicleId, journeyStartDateTimestamp, journeyEndDateTimestamp = null){
-    returnData = [] //Array of visited location objects as received from db.
+    returnData = [] //Array of visited location objects AS RECEIVED FROM DB.
 
     journeyEndDateTimestamp == null ? journeyEndDateTimestamp = journeyStartDateTimestamp : null ;
 
