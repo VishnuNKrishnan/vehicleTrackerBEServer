@@ -15,6 +15,7 @@
     "express": "^4.17.3",
     "firebase-admin": "^10.0.2",
     "node-fetch": "^2.6.7",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "ws": "^8.6.0"
   }
 }

@@ -1,11 +1,13 @@
-const express = require('express');
-const app = express();
-require('dotenv').config();
+const express = require('express')
+const app = express()
+const server = require('http').createServer(app)
+require('dotenv').config()
 
-var cors = require('cors')
+const cors = require('cors')
 app.use(cors())
 
-
+const WebSocket = require('ws')
+const wss = new WebSocket.Server({server: server})
 
 //const appendSTRCoords = require('./module_appendSTRCoords')
 const authenticateTracker = require(`./module_authenticateTracker`)
@@ -14,13 +16,28 @@ const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
 const authenticateWebApp = require('./module_authenticateWebApp')
 const getVisitedLocations = require('./module_getVisitedLocations')
 const getWaypointCoords = require('./module_getWayPointCoords')
+const getDetailedJourneyInformation = require('./module_getDetailedJourneyInformation')
 
-const { request } = require('express');
+const { request } = require('express')
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 
-app.use(express.static('public'));
+app.use(express.static('public'))
 app.use(express.json({ limit: 100000 }))
+
+//------------------------
+//WebSocket Communications
+//------------------------
+
+wss.on('connection', function connection(ws){
+    console.log(`New vehicle connected.`)
+    ws.send('Welcome, new vehicle!')
+
+    ws.on('message', function incoming(message){
+        console.log(`New message: ${message}`)
+        ws.send(`Message received!`)
+    })
+})
 
 //API Endpoint for monitor app to authenticate accounts.
 app.post('/app/authenticateAccount', async (request, response) => {
@@ -42,14 +59,13 @@ app.post('/app/getVisitedLocations', async (request, response) => {
     console.log(`Journey Start Date: ${Date(JSON.stringify(request.body.journeyStartDate))}`)
     console.log(`Journey End Date: ${Date(JSON.stringify(request.body.journeyEndDate))}`)
     const responseForClient = await getVisitedLocations.getVisitedLocations(request.body.vehicleId, request.body.journeyStartDate, request.body.journeyEndDate)
-    console.log(`Number of results collected and sent: ${responseForClient.length}`)
+    console.log(`Number of Visited Locations collected and sent: ${responseForClient.length}`)
     response.json(responseForClient)
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.end()
 })
 
 //API Endpoint to get the coordinates of all the waypoints travelled by a particular vehicleId from a specified start date to end date. Used by component MapHolder.jsx on the front end app.
-//INCOMPLETE FUNCTION
 app.post(`/app/getWayPoints`, async (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(`New request to collect Waypoints...`)
@@ -58,6 +74,20 @@ app.post(`/app/getWayPoints`, async (request, response) => {
     console.log(`Journey End Date: ${Date(JSON.stringify(request.body.journeyEndDate))}`)
     const responseForClient = await getWaypointCoords.getWayPointCoords(request.body.vehicleId, request.body.journeyStartDate, request.body.journeyEndDate)
     console.log(`Number of Waypoints collected and sent: ${responseForClient.length}`)
+    response.json(responseForClient)
+    response.end()
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+})
+
+//API Endpoint to get detailed Journey Information. Used by component JourneyInfoDetailed.jsx on the front end.
+app.post('/app/getDetailedJourneyInfo', async (request, response) => {
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`New request to collect Detailed Journey Information...`)
+    console.log(`Vehicle ID: ${request.body.vehicleId}`)
+    console.log(`Journey Start Date: ${Date(JSON.stringify(request.body.journeyStartDate))}`)
+    console.log(`Journey End Date: ${Date(JSON.stringify(request.body.journeyEndDate))}`)
+    const responseForClient = await getDetailedJourneyInformation.getDetailedJourneyInformation(request.body.vehicleId, request.body.journeyStartDate, request.body.journeyEndDate)
+    console.log('Response for client: ', responseForClient)
     response.json(responseForClient)
     response.end()
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
