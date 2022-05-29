@@ -17,8 +17,9 @@ const authenticateWebApp = require('./module_authenticateWebApp')
 const getVisitedLocations = require('./module_getVisitedLocations')
 const getWaypointCoords = require('./module_getWayPointCoords')
 const getDetailedJourneyInformation = require('./module_getDetailedJourneyInformation')
+const getAllVehiclesDetailsOnAccount = require('./module_getAllVehiclesIdsOnAccount')
 
-const { request } = require('express')
+const { request, response } = require('express')
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 
@@ -48,6 +49,17 @@ app.post('/app/authenticateAccount', async (request, response) => {
     console.log(responseForClient)
     response.json(responseForClient)
     response.end()
+})
+
+//API Endpoint to get the details of all vehicles connected to an account as an array of objects
+app.post('/app/getAllVehiclesDetails', async (request, response) => {
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`New request to get all vehicles with details from Account No.: ${request.body.accountId}`)
+    const responseForClient = await getAllVehiclesDetailsOnAccount.getAllVehiclesDetailsOnAccount(request.body.accountId)
+    console.log(responseForClient)
+    response.json(responseForClient)
+    response.end()
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
 })
 
 //API Endpoint to get the visited Locations on a particular date for a particular vehicleId. Used by component VisitedLocationsList.jsx on the frontend.
