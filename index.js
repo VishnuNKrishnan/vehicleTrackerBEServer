@@ -56,7 +56,16 @@ app.post('/app/getAllVehiclesDetails', async (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(`New request to get all vehicles with details from Account No.: ${request.body.accountId}`)
     const responseForClient = await getAllVehiclesDetailsOnAccount.getAllVehiclesDetailsOnAccount(request.body.accountId)
-    console.log(responseForClient)
+    //console.log(responseForClient)
+    console.log(`[`);
+    responseForClient.forEach((obj, index)=>{
+        console.log(`----${index + 1}-------------------`);
+        console.log(`driverName: ${obj.driverName}`)
+        console.log(`licensePlate: ${obj.licensePlate}`)
+        console.log(`vehicleDescription: ${obj.vehicleDescription}`)
+        console.log(`vehicleId: ${obj.vehicleId}`)
+    })
+    console.log(`]`)
     response.json(responseForClient)
     response.end()
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
