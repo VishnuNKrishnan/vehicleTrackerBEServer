@@ -105,8 +105,8 @@ app.post('/app/getDetailedJourneyInfo', async (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
 })
 
-//API Endpoint to register new tracker/vehicle (trackerId and vehicleId are the same. The name has been interchangeably used.)
-app.get('/api/registerNewTracker', (request, response) => {
+//API Endpoint to link tracker/vehicle with AccountId (trackerId and vehicleId are the same. The name has been interchangeably used.)
+app.get('/api/linkTrackerWithAccount', (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(Date());
     console.log(`New Tracker-Account-Linking request received...\n`);

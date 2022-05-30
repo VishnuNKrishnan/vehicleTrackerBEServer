@@ -71,7 +71,7 @@ async function linkTrackerWithAccount(accountId, vehicleId){
     return
 }
 
-//linkTrackerWithAccount(1212621, 'tlp-856-54t-rt1')
-//Meaning: If vehicle id tlp-856-54t-rt1 exists in unregisteredVehicleIds collection in the db, register it with account id 1212621.
+//linkTrackerWithAccount(1212621, '785-965-854-855')
+//Meaning: If vehicle id 555-999-444-333 exists in unregisteredVehicleIds collection in the db, register it with account id 1212621.
 
 module.exports = { linkTrackerWithAccount }
