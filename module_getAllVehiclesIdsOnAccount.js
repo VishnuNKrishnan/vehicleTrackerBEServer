@@ -18,7 +18,8 @@ async function getAllVehiclesDetailsOnAccount(accountId, searchQuery = null){ //
             driverName: doc.data().driverName == '' ? 'Driver Not Assigned' : doc.data().driverName,
             licensePlate: doc.data().licensePlate,
             vehicleDescription: doc.data().vehicleDescription,
-            vehicleId: doc.data().vehicleId
+            vehicleId: doc.data().vehicleId,
+            displayStyleObject: {display: 'flex'} //Used on the front end to manipulate and show or hide the vehicle card based on user's search query.
         }
 
         returnData.push(vehicleDetailsObject)

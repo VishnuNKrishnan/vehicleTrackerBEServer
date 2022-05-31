@@ -115,11 +115,21 @@ app.post('/app/getDetailedJourneyInfo', async (request, response) => {
 })
 
 //API Endpoint to link tracker/vehicle with AccountId (trackerId and vehicleId are the same. The name has been interchangeably used.)
-app.get('/api/linkTrackerWithAccount', (request, response) => {
+app.post('/app/linkTrackerWithAccount', (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(Date());
     console.log(`New Tracker-Account-Linking request received...\n`);
-    linkTrackerWithAccount.linkTrackerWithAccount(1212621,`222-111-232-220`)
+    linkTrackerWithAccount.linkTrackerWithAccount(
+        request.body.accountId,
+        request.body.vehicleId,
+        request.body.vehiclePassword,
+        request.body.licensePlate,
+        request.body.vehicleDescription,
+        request.body.vehicleType,
+        request.body.vehicleGroup,
+        request.body.engineNumber,
+        request.body.chassisNumber
+    )
     //console.log(`New tracker registration request from: ${request.body.vehicleId}`);
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.end()
