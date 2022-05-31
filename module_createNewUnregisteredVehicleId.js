@@ -1,6 +1,6 @@
 //Function to create a VehicleID entry in the unregistereVehicleIds collection.
 
-async function createNewUnregisteredVehicleId(){
+async function createNewUnregisteredVehicleId(vehicleId){
     const db = require('./module_initializeFirebase')
     const uuid = require('./module_generateUUID')
 
@@ -11,7 +11,7 @@ async function createNewUnregisteredVehicleId(){
 
     //Object to add to DB
     const unregisteredVehicleIdObject = {
-        vehicleId: uuid.uuid(),
+        vehicleId: vehicleId,
         vehiclePassword: 'puthiyakaavu',
         timeCreated: Date.now()
     }
@@ -24,7 +24,7 @@ async function createNewUnregisteredVehicleId(){
     return returnData
 }
 
-createNewUnregisteredVehicleId().then(obj=>{
+createNewUnregisteredVehicleId('526-854-896-789').then(obj=>{
     console.log(obj)
 })
 

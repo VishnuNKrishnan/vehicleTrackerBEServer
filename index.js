@@ -18,6 +18,7 @@ const getVisitedLocations = require('./module_getVisitedLocations')
 const getWaypointCoords = require('./module_getWayPointCoords')
 const getDetailedJourneyInformation = require('./module_getDetailedJourneyInformation')
 const getAllVehiclesDetailsOnAccount = require('./module_getAllVehiclesIdsOnAccount')
+const getVehicleDetails = require('./module_getVehicleDetails.js')
 
 const { request, response } = require('express')
 const port = process.env.PORT || 3001
@@ -95,6 +96,17 @@ app.post(`/app/getWayPoints`, async (request, response) => {
     console.log(`Journey End Date: ${Date(JSON.stringify(request.body.journeyEndDate))}`)
     const responseForClient = await getWaypointCoords.getWayPointCoords(request.body.vehicleId, request.body.journeyStartDate, request.body.journeyEndDate)
     console.log(`Number of Waypoints collected and sent: ${responseForClient.length}`)
+    response.json(responseForClient)
+    response.end()
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+})
+
+//API Endpoint to get details for display on VehicleDetailsBar.jsx on the front end.
+app.post('/app/getVehicleDetails', async (request, response) => {
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ ${Date()} ▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`New request to collect Vehicle Details for Vehicle ID ${request.body.vehicleId}...`)
+    const responseForClient = await getVehicleDetails.getVehicleDetails(request.body.vehicleId)
+    console.log(responseForClient)
     response.json(responseForClient)
     response.end()
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
