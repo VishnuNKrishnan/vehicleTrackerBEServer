@@ -24,7 +24,7 @@ async function createNewUnregisteredVehicleId(vehicleId){
     return returnData
 }
 
-createNewUnregisteredVehicleId('526-854-896-789').then(obj=>{
+createNewUnregisteredVehicleId('797-852-123-524').then(obj=>{
     console.log(obj)
 })
 

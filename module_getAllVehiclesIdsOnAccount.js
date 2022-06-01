@@ -6,7 +6,7 @@ async function getAllVehiclesDetailsOnAccount(accountId, searchQuery = null){ //
     var returnData = []
 
     const vehicleIdRef = db.collection('vehicles')
-    const vehicleIdData = await vehicleIdRef.where('registeredAccountId', '==', parseInt(accountId)).get()
+    const vehicleIdData = await vehicleIdRef.where('registeredAccountId', '==', parseInt(accountId)).orderBy('licensePlate').get()
 
     vehicleIdData.forEach(doc => {
         
