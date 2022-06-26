@@ -10,12 +10,14 @@
   "author": "Vishnu Navaneeth Krishnan",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "firebase-admin": "^10.0.2",
     "node-fetch": "^2.6.7",
     "nodemon": "^2.0.15",
+    "twilio": "^3.77.2",
     "ws": "^8.6.0"
   }
 }

@@ -24,8 +24,8 @@ async function createNewUnregisteredVehicleId(vehicleId){
     return returnData
 }
 
-createNewUnregisteredVehicleId('797-852-123-524').then(obj=>{
-    console.log(obj)
-})
+// createNewUnregisteredVehicleId('797-852-123-524').then(obj=>{
+//     console.log(obj)
+// })
 
 module.exports = { createNewUnregisteredVehicleId }

@@ -19,8 +19,15 @@ const getWaypointCoords = require('./module_getWayPointCoords')
 const getDetailedJourneyInformation = require('./module_getDetailedJourneyInformation')
 const getAllVehiclesDetailsOnAccount = require('./module_getAllVehiclesIdsOnAccount')
 const getVehicleDetails = require('./module_getVehicleDetails.js')
+const createNewUnregisteredVehicleId = require('./module_createNewUnregisteredVehicleId')
+const sendNewVehicleId = require('./emailFunctions/sendNewVehicleId')
+const sendLimitReachedEmail = require('./emailFunctions/sendLimitReached')
+const sendSpeedingAlert_Email = require('./emailFunctions/sendSpeedingAlert')
+const generateId = require('./submodule_generateId')
+const sendVehicleIdSMS = require('./temp_SMSTest') 
 
 const { request, response } = require('express')
+const { uuid } = require('./module_generateUUID')
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
 
@@ -143,6 +150,26 @@ app.post('/app/linkTrackerWithAccount', (request, response) => {
         request.body.chassisNumber
     )
     //console.log(`New tracker registration request from: ${request.body.vehicleId}`);
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    response.end()
+})
+
+//API Endpoint to create and send a new vehicle id to add new vehicle on the front end
+app.post('/app/getNewVehicleId', async (request, response) => {
+    console.log(`\n▇▇▇▇ ${Date()} ▇▇▇▇\n`)
+    console.log(Date());
+    console.log(`New vehicleId request received...\n`);
+
+    let newVehicleId = generateId.generateVid()
+    
+    createNewUnregisteredVehicleId.createNewUnregisteredVehicleId(newVehicleId) //Create the new Vehicle ID
+
+    sendNewVehicleId.sendNewVehicleId_Email(newVehicleId) //Send Vehicle ID as Email
+    //sendLimitReachedEmail.sendLimitReached()
+    sendSpeedingAlert_Email.sendSpeedingAlert_Email('DXB J 51340', 'Land Rover LR4', 'E66', 'Dubai Al Ain Road', 'Dubai', '145', 'km/h', 'Vishnu Navaneeth', '+971506738672')
+    sendVehicleIdSMS.sendSMS(newVehicleId) //Send Vehicle ID as SMS
+    //console.log(`New tracker registration request from: ${request.body.vehicleId}`);
+    
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.end()
 })
