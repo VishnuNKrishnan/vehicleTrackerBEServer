@@ -15,7 +15,9 @@ async function getVehicleDetails(vehicleId){
     responseData.driverName = vehicleIdData.data().driverName == '' ? 'Driver Unassigned' : vehicleIdData.data().driverName
     responseData.driverContact = vehicleIdData.data().driverContact == '' ? 'Contact Unavailable' : vehicleIdData.data().driverContact
     responseData.vehicleType = vehicleIdData.data().vehicleDescription + ', ' + vehicleIdData.data().vehicleType
-    responseData.vehicleGroup = vehicleIdData.data().vehicleGroup == '' ? 'Group Unassigned' : vehicleIdData.data().vehicleGroup
+    responseData.vehicleGroup = vehicleIdData.data().vehicleGroup == '' ? 'Group Unassigned' : vehicleIdData.data().vehicleGroup 
+    responseData.engineNumber = vehicleIdData.data().engineNumber == '' ? 'Not Available' : vehicleIdData.data().engineNumber
+    responseData.chassisNumber = vehicleIdData.data().chassisNumber == '' ? 'Not Available' : vehicleIdData.data().chassisNumber
     responseData.displayPictureBase64 = vehicleIdData.data().displayPictureBase64 == '' ? templateDP : vehicleIdData.data().displayPictureBase64
 
     return responseData
