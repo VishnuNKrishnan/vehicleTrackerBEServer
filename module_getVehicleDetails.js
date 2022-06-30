@@ -14,7 +14,7 @@ async function getVehicleDetails(vehicleId){
     responseData.licensePlate = vehicleIdData.data().licensePlate
     responseData.driverName = vehicleIdData.data().driverName == '' ? 'Driver Unassigned' : vehicleIdData.data().driverName
     responseData.driverContact = vehicleIdData.data().driverContact == '' ? 'Contact Unavailable' : vehicleIdData.data().driverContact
-    responseData.vehicleType = vehicleIdData.data().vehicleDescription + ', ' + vehicleIdData.data().vehicleType
+    responseData.vehicleType = vehicleIdData.data().vehicleDescription + vehicleIdData.data().vehicleType ? `, ${vehicleIdData.data().vehicleType}` : null
     responseData.vehicleGroup = vehicleIdData.data().vehicleGroup == '' ? 'Group Unassigned' : vehicleIdData.data().vehicleGroup 
     responseData.engineNumber = vehicleIdData.data().engineNumber ? vehicleIdData.data().engineNumber : 'Not Available'
     responseData.chassisNumber = vehicleIdData.data().chassisNumber ? vehicleIdData.data().chassisNumber : 'Not Available'
