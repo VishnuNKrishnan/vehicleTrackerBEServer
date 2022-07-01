@@ -23,7 +23,7 @@ async function getVehicleDetails(vehicleId){
     responseData.displayPictureBase64 = vehicleIdData.data().displayPictureBase64 == '' ? templateDP : vehicleIdData.data().displayPictureBase64
     responseData.speedLimit = vehicleIdData.data().speedLimit ? vehicleIdData.data().speedLimit : 'Not Available'
     responseData.alertDriver = vehicleIdData.data().alertDriver ? vehicleIdData.data().alertDriver : 'Not Available'
-    responseData.alertDriverMethods = vehicleIdData.data().alertDriverMethods ? vehicleIdData.data().alertDriverMethods : false
+    responseData.alertDriverMethods = vehicleIdData.data().alertDriverMethods ? vehicleIdData.data().alertDriverMethods : []
 
     return responseData
 }
