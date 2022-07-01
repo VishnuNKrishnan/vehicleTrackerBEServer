@@ -14,12 +14,16 @@ async function getVehicleDetails(vehicleId){
     responseData.licensePlate = vehicleIdData.data().licensePlate
     responseData.driverName = vehicleIdData.data().driverName == '' ? 'Driver Unassigned' : vehicleIdData.data().driverName
     responseData.driverContact = vehicleIdData.data().driverContact == '' ? 'Contact Unavailable' : vehicleIdData.data().driverContact
+    responseData.driverEmail = vehicleIdData.data().driverEmail == '' ? 'Contact Unavailable' : vehicleIdData.data().driverEmail
     responseData.vehicleType = vehicleIdData.data().vehicleDescription
     vehicleIdData.data().vehicleType ? responseData.vehicleType += `, ${vehicleIdData.data().vehicleType}` : responseData.vehicleType += ``
     responseData.vehicleGroup = vehicleIdData.data().vehicleGroup == '' ? 'Group Unassigned' : vehicleIdData.data().vehicleGroup 
     responseData.engineNumber = vehicleIdData.data().engineNumber ? vehicleIdData.data().engineNumber : 'Not Available'
     responseData.chassisNumber = vehicleIdData.data().chassisNumber ? vehicleIdData.data().chassisNumber : 'Not Available'
     responseData.displayPictureBase64 = vehicleIdData.data().displayPictureBase64 == '' ? templateDP : vehicleIdData.data().displayPictureBase64
+    responseData.speedLimit = vehicleIdData.data().speedLimit ? vehicleIdData.data().speedLimit : 'Not Available'
+    responseData.alertDriver = vehicleIdData.data().alertDriver ? vehicleIdData.data().alertDriver : 'Not Available'
+    responseData.alertDriverMethods = vehicleIdData.data().alertDriverMethods ? vehicleIdData.data().alertDriverMethods : false
 
     return responseData
 }
