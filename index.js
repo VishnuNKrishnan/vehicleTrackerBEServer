@@ -24,9 +24,11 @@ const sendNewVehicleId = require('./emailFunctions/sendNewVehicleId')
 const sendLimitReachedEmail = require('./emailFunctions/sendLimitReached')
 const sendSpeedingAlert_Email = require('./emailFunctions/sendSpeedingAlert')
 const generateId = require('./submodule_generateId')
-const sendVehicleIdSMS = require('./temp_SMSTest') 
+const sendVehicleIdSMS = require('./temp_SMSTest')
+const assignDriverToVehicle = require('./module_assignDriverToVehicleID')
+const removeDriverFromVehicle = require('./module_removeDriverFromVehicleId')
 
-const { request, response } = require('express')
+const { request, response, json } = require('express')
 const { uuid } = require('./module_generateUUID')
 const port = process.env.PORT || 3001
 app.listen(port, () => console.log(`Vehicle tracking server activated.\nListening at :${port}...`));
@@ -189,7 +191,6 @@ app.post('/api/authenticate', async (request, response) => {
 //API Endpoint for onboard device to add waypoint
 app.post('/api/addWayPoints', async (request, response) => {
     console.log(`\n▇▇▇▇ ${Date()} ▇▇▇▇\n`)
-    console.log(Date());
     console.log(`New wayPoints given by vehicleId: ${request.body[0].vehicleId}`)
     console.log(`Number of coords in the request: ${request.body.length}`)
     var responseForClientObject = await addWayPointsToDB.addWayPointsToDB(request.body)
@@ -203,3 +204,29 @@ app.post('/api/addWayPoints', async (request, response) => {
 
     //appendSTRCoords.appendSTRCoords(request.body[0].vehicleId)
 });
+
+//API Endpoint to assign a driver to a vehicle ID
+app.post('/app/assignDriverToVehicleID', async (request, response) => {
+    console.log(`\n▇▇▇▇ ${Date()} ▇▇▇▇\n`)
+    console.log(`New request to assign driver to vehicleID ${request.body.vehicleId}`)
+    const responseData = await assignDriverToVehicle.assignDriverToVehicle(request.body)
+    // console.log(request.body)
+    response.json(responseData)
+    response.end()
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`\n\n\n`)
+
+})
+
+//API Endpoint to remove a driver from a vehicle ID
+app.post('/app/removeDriverFromVehicle', async (request, response) => {
+    console.log(`\n▇▇▇▇ ${Date()} ▇▇▇▇\n`)
+    console.log(`New request to remove driver from vehicleID ${request.body.vehicleId}`)
+    const responseData = await removeDriverFromVehicle.removeDriverFromVehicle(request.body.vehicleId)
+    // console.log(request.body)
+    response.json(responseData)
+    response.end()
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`\n\n\n`)
+
+})
