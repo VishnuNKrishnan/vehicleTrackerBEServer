@@ -1,4 +1,5 @@
 const db = require('./module_initializeFirebase')
+const sendEmailNotification = require('./emailFunctions/sendDriverAssignedNotification')
 
 async function assignDriverToVehicle(detailsObject){
     //Sample of parameters received from the request:
@@ -15,11 +16,29 @@ async function assignDriverToVehicle(detailsObject){
         driverDetailsUpdated: false
     }
 
+    //Get vehicle details from DB
+    const vehicleDetailsRef = db.collection('vehicles').doc(detailsObject.vehicleId)
+    const vehicleDetails = await vehicleDetailsRef.get()
+    const vehicleDetailsObject = vehicleDetails.data()
+
+    //console.log(vehicleDetailsObject)
+
+
     //Update the details on the DB:
     if(db.collection('vehicles').doc(detailsObject.vehicleId).update({displayPictureBase64: detailsObject.driverPhotoBase64, driverName: detailsObject.driverFullName, driverContact: detailsObject.driverContact, driverEmail: detailsObject.driverEmail})){
         responseData.driverDetailsUpdated = true
+
+        //Send Email notification
+        sendEmailNotification.sendNewDriverAssigned_Email(
+            vehicleDetailsObject.vehicleDescription,
+            detailsObject.driverFullName,
+            'OWNER',
+            vehicleDetailsObject.licensePlate,
+            detailsObject.driverEmail,
+            detailsObject.driverContact,
+            detailsObject.driverPhotoBase64
+        )
     }
-    // const vehicleIdData = await vehicleIdRef.get()
 
     console.log(`Driver details updation status: ${responseData.driverDetailsUpdated}`)
     return responseData
