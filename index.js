@@ -24,6 +24,8 @@ const sendNewVehicleId = require('./emailFunctions/sendNewVehicleId')
 const sendLimitReachedEmail = require('./emailFunctions/sendLimitReached')
 const sendSpeedingAlert_Email = require('./emailFunctions/sendSpeedingAlert')
 const generateId = require('./submodule_generateId')
+const generateOTP = require('./submodule_generateOTP')
+const sendOTP_SMS = require('./SMSFunctions/sendOTP')
 const sendVehicleIdSMS = require('./temp_SMSTest')
 const assignDriverToVehicle = require('./module_assignDriverToVehicleID')
 const removeDriverFromVehicle = require('./module_removeDriverFromVehicleId')
@@ -228,5 +230,29 @@ app.post('/app/removeDriverFromVehicle', async (request, response) => {
     response.end()
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(`\n\n\n`)
+})
 
+//API Endpoint to generate OTP and send to phone number
+app.post('/app/getOTP', async (request, response) => {
+    console.log(`\n▇▇▇▇ ${Date()} ▇▇▇▇\n`)
+    console.log(`New request Generate and send OTP SMS ${request.body.phoneNumber}`)
+    const responseData = await generateOTP.generateOTP()
+    // Sample responseData
+    // responseForClient = {
+    //     success: true,
+    //     requestId: 'aaa-bbb-ccc-ddd',
+    //     otp: '125634'
+    // }
+    
+    //Send OTP SMS
+    sendOTP_SMS.sendOTP_SMS(request.body.phoneNumber, request.body.transactionName, responseData.otp)
+    
+    //Remove OTP from object so that OTP does not get sent to the broswer of the client
+    delete responseData.otp
+    response.json(responseData)
+    response.end()
+
+
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    console.log(`\n\n\n`)
 })

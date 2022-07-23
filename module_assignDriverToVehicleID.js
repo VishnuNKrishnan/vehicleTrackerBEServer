@@ -9,7 +9,8 @@ async function assignDriverToVehicle(detailsObject){
     //     driverFullName: driverFullName,
     //     driverEmail: driverEmail,
     //     driverContact: driverContact,
-    //     driverContactVerified: false,
+    //     requestId: false,
+    //     otp: false
     //   }
 
     var responseData = {
