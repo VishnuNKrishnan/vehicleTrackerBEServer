@@ -235,7 +235,7 @@ app.post('/app/removeDriverFromVehicle', async (request, response) => {
 //API Endpoint to generate OTP and send to phone number
 app.post('/app/getOTP', async (request, response) => {
     console.log(`\n▇▇▇▇ ${Date()} ▇▇▇▇\n`)
-    console.log(`New request Generate and send OTP SMS ${request.body.phoneNumber}`)
+    console.log(`New request to generate and send OTP SMS ${request.body.phoneNumber}`)
     const responseData = await generateOTP.generateOTP()
     // Sample responseData
     // responseForClient = {
@@ -249,6 +249,7 @@ app.post('/app/getOTP', async (request, response) => {
     
     //Remove OTP from object so that OTP does not get sent to the broswer of the client
     delete responseData.otp
+    console.log(responseData)
     response.json(responseData)
     response.end()
 

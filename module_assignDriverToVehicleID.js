@@ -14,7 +14,9 @@ async function assignDriverToVehicle(detailsObject){
     //   }
 
     var responseData = {
-        driverDetailsUpdated: false
+        driverDetailsUpdated: false,
+        otpValidationSuccess: false,
+        message: ''
     }
 
     //Get vehicle details from DB
@@ -24,9 +26,44 @@ async function assignDriverToVehicle(detailsObject){
 
     //console.log(vehicleDetailsObject)
 
+    //If Contact verification OTP has been provided, verify and proceed or reject
+    if(detailsObject.otp){
+        const otpRef = db.collection('OTPs').doc(detailsObject.requestId)
+        const otpObject = await otpRef.get()
+        const otp = otpObject.data().OTP
+        // console.log(otp)
 
-    //Update the details on the DB:
-    if(db.collection('vehicles').doc(detailsObject.vehicleId).update({displayPictureBase64: detailsObject.driverPhotoBase64, driverName: detailsObject.driverFullName, driverContact: detailsObject.driverContact, driverEmail: detailsObject.driverEmail})){
+        //Case 1: Invalid OTP
+        if(detailsObject.otp !== otp){
+            responseData.message = 'Given OTP is invalid. Please try again.'
+            return responseData
+        }
+
+        //Case 2: Valid OTP
+        if(detailsObject.otp === otp && db.collection('vehicles').doc(detailsObject.vehicleId).update({displayPictureBase64: detailsObject.driverPhotoBase64, driverName: detailsObject.driverFullName, driverContact: detailsObject.driverContact, driverEmail: detailsObject.driverEmail, driverContactVerified: true})){
+            responseData.driverDetailsUpdated = true
+            responseData.message = 'OTP is valid!'
+            responseData.otpValidationSuccess = true
+    
+            //Send Email notification
+            sendEmailNotification.sendNewDriverAssigned_Email(
+                vehicleDetailsObject.vehicleDescription,
+                detailsObject.driverFullName,
+                'OWNER',
+                vehicleDetailsObject.licensePlate,
+                detailsObject.driverEmail,
+                detailsObject.driverContact,
+                detailsObject.driverPhotoBase64
+            )
+        }
+        console.log(`Driver details updation status: ${responseData.driverDetailsUpdated}`)
+        return responseData
+    }
+
+    // ============ BELOW CODE IS ONLY FOR CONTACT INVERIFIED ASSIGNMENTS ================
+
+    //Update the details on the DB without driver contact verification:
+    if(db.collection('vehicles').doc(detailsObject.vehicleId).update({displayPictureBase64: detailsObject.driverPhotoBase64, driverName: detailsObject.driverFullName, driverContact: detailsObject.driverContact, driverEmail: detailsObject.driverEmail, driverContactVerified: false})){
         responseData.driverDetailsUpdated = true
 
         //Send Email notification
