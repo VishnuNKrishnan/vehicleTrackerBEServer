@@ -41,6 +41,8 @@ async function assignDriverToVehicle(detailsObject){
 
         //Case 2: Valid OTP
         if(detailsObject.otp === otp && db.collection('vehicles').doc(detailsObject.vehicleId).update({displayPictureBase64: detailsObject.driverPhotoBase64, driverName: detailsObject.driverFullName, driverContact: detailsObject.driverContact, driverEmail: detailsObject.driverEmail, driverContactVerified: true})){
+            //Delete used OTP
+            otpRef.delete()
             responseData.driverDetailsUpdated = true
             responseData.message = 'OTP is valid!'
             responseData.otpValidationSuccess = true

@@ -10,6 +10,8 @@ const WebSocket = require('ws')
 const wss = new WebSocket.Server({server: server})
 
 //const appendSTRCoords = require('./module_appendSTRCoords')
+const cron = require('node-cron')
+const removeExpiredOTPs_CRON = require('./cronJobs/removeExpiredOTPs')
 const authenticateTracker = require(`./module_authenticateTracker`)
 const linkTrackerWithAccount = require(`./module_linkTrackerWithAccount`)
 const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
@@ -37,6 +39,11 @@ app.listen(port, () => console.log(`Vehicle tracking server activated.\nListenin
 
 app.use(express.static('public'))
 app.use(express.json({ limit: 100000 }))
+
+//------------------------
+//CRON Jobs
+//------------------------
+cron.schedule('1 * * * * *', removeExpiredOTPs_CRON.removeExpiredOTPs)
 
 //------------------------
 //WebSocket Communications
