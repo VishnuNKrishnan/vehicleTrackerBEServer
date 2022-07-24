@@ -15,7 +15,7 @@ async function getAllVehiclesDetailsOnAccount(accountId, searchQuery = null){ //
         
         const vehicleDetailsObject = {
             displayPictureBase64: doc.data().displayPictureBase64 == '' ? templateDP : doc.data().displayPictureBase64,
-            driverName: doc.data().driverName == '' ? 'Driver Not Assigned' : doc.data().driverName,
+            driverName: doc.data().driverName == '' ? 'Not Assigned' : doc.data().driverName,
             licensePlate: doc.data().licensePlate,
             vehicleDescription: doc.data().vehicleDescription,
             vehicleId: doc.data().vehicleId,
