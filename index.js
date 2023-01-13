@@ -14,6 +14,7 @@ const cron = require('node-cron')
 const removeExpiredOTPs_CRON = require('./cronJobs/removeExpiredOTPs')
 const authenticateTracker = require(`./module_authenticateTracker`)
 const linkTrackerWithAccount = require(`./module_linkTrackerWithAccount`)
+const createNewAccount = require(`./module_createNewAccount`)
 const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
 const authenticateWebApp = require('./module_authenticateWebApp')
 const getVisitedLocations = require('./module_getVisitedLocations')
@@ -57,6 +58,17 @@ wss.on('connection', function connection(ws){
         console.log(`New message: ${message}`)
         ws.send(`Message received!`)
     })
+})
+
+//API Endpoint to create new account
+app.post('/app/createNewAccount', async (request, response) => {
+    console.log(`\n▇▇▇▇ ${Date()} ▇▇▇▇\n`)
+    console.log(Date());
+    console.log(`New web app account creation request received...\n`);
+    const responseForClient = await createNewAccount.createNewAccount(request.body)
+    console.log(responseForClient)
+    response.json(responseForClient)
+    response.end()
 })
 
 //API Endpoint for monitor app to authenticate accounts.
@@ -264,3 +276,4 @@ app.post('/app/getOTP', async (request, response) => {
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(`\n\n\n`)
 })
+
