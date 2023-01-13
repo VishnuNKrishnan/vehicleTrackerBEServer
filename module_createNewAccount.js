@@ -37,7 +37,12 @@ async function createNewAccount(givenAccountData){
             contactEmails: [emailId],
             contactPhones: [mobileNumber],
             primaryEmail: emailId,
-            subscriptionPlanId: 'free'
+            subscriptionPlanId: 'free',
+            accountAccess: {    //Used to block/suspend account for any reason
+                allowed: true,
+                reason: '',
+                loginMessage: ''
+            }
         }
     
         if(db.collection('registeredAccounts').doc(accountId).set(newAccountData)){
