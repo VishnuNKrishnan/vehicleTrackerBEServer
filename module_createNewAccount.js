@@ -5,7 +5,7 @@ async function createNewAccount(givenAccountData){
     var responseData = {}
 
     var accountId = createAccountId.createAccountID()
-    var emailId = givenAccountData.accountPassword
+    var emailId = givenAccountData.emailId
     var mobileNumber = givenAccountData.mobileNumber
     var accountPassword = givenAccountData.accountPassword
     var givenOtp = givenAccountData.givenOtp
