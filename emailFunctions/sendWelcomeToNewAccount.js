@@ -219,7 +219,7 @@ async function sendWelcomeToNewAccount_Email(accountOwnerName, accountId, primar
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                <p style="font-size: 14px; line-height: 140%;">Dear ${accountOwnerName},</p>
+                                <p style="font-size: 14px; line-height: 140%;">Hi there!</p>
                                 <p style="font-size: 14px; line-height: 140%;"> </p>
                                 <p style="font-size: 14px; line-height: 140%;">Thank you for choosing knoWhere, and welcome to your new account!</p>
                                 <p style="font-size: 14px; line-height: 140%;">Please find the details of your new account below:</p>
@@ -407,9 +407,9 @@ async function sendWelcomeToNewAccount_Email(accountOwnerName, accountId, primar
         from: "developer@vishnunkrishnan.site",
         subject: `Your new knoWhere account`,
         text: `
-        Dear ${accountOwnerName},
+        Hi there!
 
-        \nThank you for choosing knoWhere, and welcome to your new account!
+        \nThank you for choosing knoWhere, and welcome to your new account.
         \nPlease find the details of your new account below:
         
         \n\nAccount ID: ${accountId}
