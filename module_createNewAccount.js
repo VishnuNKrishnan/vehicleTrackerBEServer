@@ -1,5 +1,6 @@
 const db = require('./module_initializeFirebase')
 const createAccountId = require('./submodule_createAccountId.js')
+const sendEmailNotification = require('./emailFunctions/sendWelcomeToNewAccount.js')
 
 async function createNewAccount(givenAccountData){
     var responseData = {}
@@ -48,6 +49,14 @@ async function createNewAccount(givenAccountData){
         if(db.collection('registeredAccounts').doc(accountId).set(newAccountData)){
             responseData.otpValidationSuccess = true
             responseData.message = 'New account creation successful'
+
+            //Send Email notification
+            sendEmailNotification.sendWelcomeToNewAccount_Email(
+                'N/A',
+                newAccountData.accountId,
+                newAccountData.primaryEmail,
+                newAccountData.contactPhones[0]
+            )
         }else{
             responseData.otpValidationSuccess = true
             responseData.message = 'New account creation failed'
