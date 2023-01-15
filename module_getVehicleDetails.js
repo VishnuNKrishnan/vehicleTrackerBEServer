@@ -25,6 +25,7 @@ async function getVehicleDetails(vehicleId){
     responseData.speedLimit = vehicleIdData.data().speedLimit ? vehicleIdData.data().speedLimit : 'Not Available'
     responseData.alertDriver = vehicleIdData.data().alertDriver ? vehicleIdData.data().alertDriver : 'Not Available'
     responseData.alertDriverMethods = vehicleIdData.data().alertDriverMethods ? vehicleIdData.data().alertDriverMethods : []
+    responseData.lastOnline = vehicleIdData.data().lastOnline ? vehicleIdData.data().lastOnline : null
 
     return responseData
 }
