@@ -187,11 +187,10 @@ app.post('/app/getNewVehicleId', async (request, response) => {
     
     createNewUnregisteredVehicleId.createNewUnregisteredVehicleId(newVehicleId) //Create the new Vehicle ID
 
-    sendNewVehicleId.sendNewVehicleId_Email(newVehicleId) //Send Vehicle ID as Email
+    sendNewVehicleId.sendNewVehicleId_Email(newVehicleId, 'vishnunavaneet@gmail.com') //Send Vehicle ID as Email
     //sendLimitReachedEmail.sendLimitReached()
-    sendSpeedingAlert_Email.sendSpeedingAlert_Email('DXB J 51340', 'Land Rover LR4', 'E66', 'Dubai Al Ain Road', 'Dubai', '145', 'km/h', 'Vishnu Navaneeth', '+971506738672')
+    //sendSpeedingAlert_Email.sendSpeedingAlert_Email('DXB J 51340', 'Land Rover LR4', 'E66', 'Dubai Al Ain Road', 'Dubai', '145', 'km/h', 'Vishnu Navaneeth', '+971506738672')
     sendVehicleIdSMS.sendSMS(newVehicleId) //Send Vehicle ID as SMS
-    //console.log(`New tracker registration request from: ${request.body.vehicleId}`);
     
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     response.end()

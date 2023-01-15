@@ -2,7 +2,7 @@ require('dotenv').config()
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.NODE_SERVER_SENDGRID_API_KEY)
 
-async function sendNewVehicleId_Email(newVehicleId){
+async function sendNewVehicleId_Email(newVehicleId, toEmailId){
 
     const htmlContent = `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -225,7 +225,7 @@ async function sendNewVehicleId_Email(newVehicleId){
     `
 
     const msg = {
-        to: "vishnunavaneet@gmail.com",
+        to: toEmailId,
         from: "developer@vishnunkrishnan.site",
         subject: "Your New Vehicle ID",
         text: `Your new vehicle id is ${newVehicleId}. Please use this vehcle id to link your new vehicle within the next 10 minutes.`,
