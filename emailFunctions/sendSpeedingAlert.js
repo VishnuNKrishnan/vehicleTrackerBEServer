@@ -8,7 +8,7 @@ async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadRef
     const locationSub = `${roadReference}, ${roadName}`
     const recordedTimestamp = speedingTimestamp
 
-    const date = new Date(recordedTimestamp * 1000);
+    const date = new Date(recordedTimestamp);
     const dateOptions = { timeZone: 'Asia/Dubai', year: 'numeric', month: '2-digit', day: '2-digit' };
     const formattedDate = date.toLocaleString('en-US', dateOptions);
     //console.log(dateInDubai); // Output: "25-09-2022"
