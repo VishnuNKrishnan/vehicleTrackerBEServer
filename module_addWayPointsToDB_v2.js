@@ -98,7 +98,8 @@ async function addWayPointsToDB(wayPointsArray){
                 allowedSpeedLimit,
                 vehicleData.data().driverName,
                 vehicleData.data().driverContact,
-                vehicleData.data().driverEmail
+                vehicleData.data().driverEmail,
+                highestSpeed.timestamp
               )
             console.log('Speeding email triggered');
         }

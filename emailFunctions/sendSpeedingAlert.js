@@ -2,13 +2,31 @@ require('dotenv').config()
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey('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')
 
-async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadReference, roadName, city, recordedSpeed, speedUnit, alertLimit, driverName, driverContact, driverEmail){
+async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadReference, roadName, city, recordedSpeed, speedUnit, alertLimit, driverName, driverContact, driverEmail, speedingTimestamp){
 
     const locationMain = `${city}`
     const locationSub = `${roadReference}, ${roadName}`
-    const recordedTime = '02:14 PM (Dummy)'
-    const recordedDate = '13-01-2023 (Dummy)'
-    const legalSpeedLimit = 120
+    const speedingTimestamp = speedingTimestamp
+    const recordedTimestamp = speedingTimestamp
+
+    var date = new Date(recordedTimestamp * 1000);
+    // Hours part from the timestamp
+    var hours = date.getHours();
+    // Minutes part from the timestamp
+    var minutes = "0" + date.getMinutes();
+    // Seconds part from the timestamp
+    var seconds = "0" + date.getSeconds();
+    // Will display time in 10:30:23 format
+    var formattedTime = hours + ':' + minutes.substr(-2)
+    
+    var day = date.getDate() + 1
+    var month = date.getMonth() + 1
+    var year = date.getFullYear()
+    var formattedDate = day + '-' + month + '-' + year
+
+    const recordedTime = formattedTime
+    const recordedDate = formattedDate
+    const legalSpeedLimit = 'NA'
 
     const htmlContent = `
     <!doctype html>
