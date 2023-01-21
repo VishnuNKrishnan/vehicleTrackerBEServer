@@ -78,7 +78,7 @@ async function addWayPointsToDB(wayPointsArray){
             //Add Code to send mail only one hour after last sent mail
 
             //Resolve location data where speeding occured
-            const openCageRequestURL = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}%2C%20${longitude}&key=${process.env.NODE_SERVER_OPENCAGEAPI}&language=en&pretty=1`
+            const openCageRequestURL = `https://api.opencagedata.com/geocode/v1/json?q=${highestSpeed.latitude}%2C%20${highestSpeed.longitude}&key=${process.env.NODE_SERVER_OPENCAGEAPI}&language=en&pretty=1`
             const openCageResponse = await fetch(openCageRequestURL)
             var openCageResponseJSON = await openCageResponse.json()
 
