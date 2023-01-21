@@ -2,26 +2,20 @@ require('dotenv').config()
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey('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')
 
-async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadReference, roadName, city, recordedSpeed, speedUnit, alertLimit, driverName, driverContact, driverEmail, speedingTimestamp){
+async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadReference, roadName, city, recordedSpeed, speedUnit, alertLimit, driverName = 'Not Assigned', driverContact, driverEmail, speedingTimestamp){
 
     const locationMain = `${city}`
     const locationSub = `${roadReference}, ${roadName}`
     const recordedTimestamp = speedingTimestamp
 
-    var date = new Date(recordedTimestamp * 1000);
-    // Hours part from the timestamp
-    var hours = date.getHours();
-    // Minutes part from the timestamp
-    var minutes = "0" + date.getMinutes();
-    // Seconds part from the timestamp
-    var seconds = "0" + date.getSeconds();
-    // Will display time in 10:30:23 format
-    var formattedTime = hours + ':' + minutes.substr(-2)
-    
-    var day = date.getDate() + 1
-    var month = date.getMonth() + 1
-    var year = date.getFullYear()
-    var formattedDate = day + '-' + month + '-' + year
+    const date = new Date(recordedTimestamp * 1000);
+    const dateOptions = { timeZone: 'Asia/Dubai', year: 'numeric', month: '2-digit', day: '2-digit' };
+    const formattedDate = date.toLocaleString('en-US', dateOptions);
+    //console.log(dateInDubai); // Output: "25-09-2022"
+
+    const timeOptions = { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit' };
+    const formattedTime = date.toLocaleTimeString('en-US', timeOptions);
+    //console.log(timeInDubai); // Output: "08:00"
 
     const recordedTime = formattedTime
     const recordedDate = formattedDate
@@ -570,7 +564,7 @@ async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadRef
             <tr>
               <td align="left" style="font-size:0px;padding:9px 15px 5px 15px;word-break:break-word;">
                 
-      <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:1.2;text-align:left;color:#000000;"><p style="font-size: 11px; font-family: Ubuntu, Helvetica, Arial;"><strong><span style="font-size: 14px;">${recordedSpeed} km/h</span></strong></p></div>
+      <div style="font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:13px;line-height:1.2;text-align:left;color:#000000;"><p style="font-size: 11px; font-family: Ubuntu, Helvetica, Arial;"><strong><span style="font-size: 14px;">${recordedSpeed.toFixed()} km/h</span></strong></p></div>
     
               </td>
             </tr>
@@ -953,7 +947,7 @@ async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadRef
         to: "vishnunavaneet@gmail.com",
         from: "developer@vishnunkrishnan.site",
         subject: `Speeding alert from your ${vehicleDescription}`,
-        text: `Your ${vehicleDescription} (${licensePlate}) has exceeded the allowed speed limit and recorded ${recordedSpeed} ${speedUnit} on ${roadReference}, ${roadName}, ${city}. Please follow and encourage safe driving practices to ensure that everyone reaches home safely.`,
+        text: `Your ${vehicleDescription} (${licensePlate}) has exceeded the allowed speed limit and recorded ${recordedSpeed.toFixed()} ${speedUnit} on ${roadReference}, ${roadName}, ${city}. Please follow and encourage safe driving practices to ensure that everyone reaches home safely.`,
         html: htmlContent
     }
     sgMail.send(msg)
