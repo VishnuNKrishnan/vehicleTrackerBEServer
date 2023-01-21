@@ -6,7 +6,6 @@ async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadRef
 
     const locationMain = `${city}`
     const locationSub = `${roadReference}, ${roadName}`
-    const speedingTimestamp = speedingTimestamp
     const recordedTimestamp = speedingTimestamp
 
     var date = new Date(recordedTimestamp * 1000);
