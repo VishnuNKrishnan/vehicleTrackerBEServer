@@ -946,18 +946,18 @@ async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadRef
 
 //sendNewVehicleId_Email('908-jfk-896-ldo')
 
-sendSpeedingAlert_Email(
-  'DXB I 46209',
-  'Land Rover LR4',
-  'E66',
-  'Dubai - Hatta Road',
-  'Dubai',
-  143,
-  'km/h',
-  120,
-  'Vishnu Navaneeth Krishnan',
-  '+971506738672',
-  'vishnunavaneet@gmail.com'
-)
+// sendSpeedingAlert_Email(
+//   'DXB I 46209',
+//   'Land Rover LR4',
+//   'E66',
+//   'Dubai - Hatta Road',
+//   'Dubai',
+//   143,
+//   'km/h',
+//   120,
+//   'Vishnu Navaneeth Krishnan',
+//   '+971506738672',
+//   'vishnunavaneet@gmail.com'
+// )
 
 module.exports = { sendSpeedingAlert_Email }

@@ -86,6 +86,7 @@ async function addWayPointsToDB(wayPointsArray){
             const roadName = openCageResponseJSON.results[0].components.road
             const suburb = openCageResponseJSON.results[0].components.suburb ? openCageResponseJSON.results[0].components.suburb : ''
 
+            console.log("Initiating speeding email alert");
             sendSpeedingAlertMail.sendSpeedingAlert_Email(
                 vehicleData.data().licensePlate,
                 vehicleData.data().vehicleDescription,
@@ -99,6 +100,7 @@ async function addWayPointsToDB(wayPointsArray){
                 vehicleData.data().driverContact,
                 vehicleData.data().driverEmail
               )
+            console.log('Speeding email triggered');
         }
     }
         
