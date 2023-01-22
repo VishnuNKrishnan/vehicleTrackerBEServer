@@ -7,7 +7,7 @@ function sendSpeedingAlert_SMS(phoneNumber, vehicleDescription, licensePlate, re
     twilio.messages.create({
         from:'+19379091818',
         to: phoneNumber,
-        body:`Hi, your ${vehicleDescription} (${licensePlate}) has exceeded the allowed speed limit. \nRecorded Speed: ${recordedSpeed} km/h\nLocation: ${locationMain}, ${locationSub}\nTime: ${recordedTime}\nAssigned to: ${driverName}\nPlease abide by and encourage safe driving practices so that everyone reaches home safe and sound.\nThanks,\nknoWhere`
+        body:`Hi, your ${vehicleDescription} (${licensePlate}) has exceeded the allowed speed limit.\n\nRecorded Speed: ${recordedSpeed} km/h\nLocation: ${locationMain}, ${locationSub}\nTime: ${recordedTime}\nAssigned to: ${driverName}\n\nPlease abide by and encourage safe driving practices so that everyone reaches home safe and sound.\nThanks,\nknoWhere`
     }).then(res=>{console.log(`Speeding Alert - SMS Sent!`)}).catch(err=>{log(err)})
 }
 
