@@ -75,33 +75,37 @@ async function addWayPointsToDB(wayPointsArray){
     const highestSpeed = findFastest(speedArray)
     if(highestSpeed.speed > allowedSpeedLimit){
         if(vehicleData.data().alertDriverMethods.includes('email')){
-            //Add Code to send mail only one hour after last sent mail
+            //Add Code to send mail only 15 minutes after last sent mail
+            const lastEmailSentAtTimestamp = vehicleData.data().lastAlertEmailSentAt ? vehicleData.data().lastAlertEmailSentAt : null
+            const timePassedAfterLastEmail = Date.now() - lastEmailSentAtTimestamp
+            if(lastEmailSentAtTimestamp != null && timePassedAfterLastEmail > 60*15*1000){
+                //Resolve location data where speeding occured
+                const openCageRequestURL = `https://api.opencagedata.com/geocode/v1/json?q=${highestSpeed.latitude}%2C%20${highestSpeed.longitude}&key=${process.env.NODE_SERVER_OPENCAGEAPI}&language=en&pretty=1`
+                const openCageResponse = await fetch(openCageRequestURL)
+                var openCageResponseJSON = await openCageResponse.json()
 
-            //Resolve location data where speeding occured
-            const openCageRequestURL = `https://api.opencagedata.com/geocode/v1/json?q=${highestSpeed.latitude}%2C%20${highestSpeed.longitude}&key=${process.env.NODE_SERVER_OPENCAGEAPI}&language=en&pretty=1`
-            const openCageResponse = await fetch(openCageRequestURL)
-            var openCageResponseJSON = await openCageResponse.json()
+                const city = openCageResponseJSON.results[0].components.city
+                const roadName = openCageResponseJSON.results[0].components.road
+                const suburb = openCageResponseJSON.results[0].components.suburb ? openCageResponseJSON.results[0].components.suburb : ''
 
-            const city = openCageResponseJSON.results[0].components.city
-            const roadName = openCageResponseJSON.results[0].components.road
-            const suburb = openCageResponseJSON.results[0].components.suburb ? openCageResponseJSON.results[0].components.suburb : ''
-
-            console.log("Initiating speeding email alert");
-            sendSpeedingAlertMail.sendSpeedingAlert_Email(
-                vehicleData.data().licensePlate,
-                vehicleData.data().vehicleDescription,
-                suburb,
-                roadName,
-                city,
-                highestSpeed.speed,
-                'km/h',
-                allowedSpeedLimit,
-                vehicleData.data().driverName,
-                vehicleData.data().driverContact,
-                vehicleData.data().driverEmail,
-                highestSpeed.timestamp
-              )
-            console.log('Speeding email triggered');
+                console.log("Initiating speeding email alert");
+                sendSpeedingAlertMail.sendSpeedingAlert_Email(
+                    vehicleData.data().licensePlate,
+                    vehicleData.data().vehicleDescription,
+                    suburb,
+                    roadName,
+                    city,
+                    highestSpeed.speed,
+                    'km/h',
+                    allowedSpeedLimit,
+                    vehicleData.data().driverName,
+                    vehicleData.data().driverContact,
+                    vehicleData.data().driverEmail,
+                    highestSpeed.timestamp
+                )
+                db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({lastAlertEmailSentAt: Date.now()})
+                console.log('Speeding email triggered');
+            }
         }
     }
         
