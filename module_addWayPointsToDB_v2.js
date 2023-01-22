@@ -76,7 +76,7 @@ async function addWayPointsToDB(wayPointsArray){
     if(highestSpeed.speed > allowedSpeedLimit){
         if(vehicleData.data().alertDriverMethods.includes('email')){
             //Add Code to send mail only 15 minutes after last sent mail
-            const lastEmailSentAtTimestamp = vehicleData.data().lastAlertEmailSentAt ? vehicleData.data().lastAlertEmailSentAt : null
+            const lastEmailSentAtTimestamp = vehicleData.data().lastAlertEmailSentAt != null ? vehicleData.data().lastAlertEmailSentAt : null
             const timePassedAfterLastEmail = Date.now() - lastEmailSentAtTimestamp
             console.log('lastEmailSentAtTimestamp>>>>>>>>', lastEmailSentAtTimestamp);
             console.log('timePassedAfterLastEmail>>>>>>>>', timePassedAfterLastEmail);
