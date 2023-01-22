@@ -3,6 +3,7 @@ const { default: fetch } = require('node-fetch')
 require('dotenv').config();
 const rctl = require('./module_resolveCoordsToLocation')
 const sendSpeedingAlertMail = require('./emailFunctions/sendSpeedingAlert')
+const sendSpeedingAlert_SMS = require('./SMSFunctions/sendSpeedingAlert_SMS')
 
 // -------------------------------------------------
 //  Workflow:
@@ -107,6 +108,18 @@ async function addWayPointsToDB(wayPointsArray){
                 )
                 db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({lastAlertEmailSentAt: Date.now()})
                 console.log('Speeding email triggered');
+
+                //Send speeding alert SMS
+                sendSpeedingAlert_SMS.sendSpeedingAlert_SMS(
+                    vehicleData.data().driverContact,
+                    vehicleData.data().vehicleDescription,
+                    vehicleData.data().licensePlate,
+                    highestSpeed.speed,
+                    highestSpeed.timestamp,
+                    city,
+                    `${suburb}, ${roadName}`,
+                    vehicleData.data().driverName
+                )
             }
         }
     }
