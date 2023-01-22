@@ -78,6 +78,8 @@ async function addWayPointsToDB(wayPointsArray){
             //Add Code to send mail only 15 minutes after last sent mail
             const lastEmailSentAtTimestamp = vehicleData.data().lastAlertEmailSentAt ? vehicleData.data().lastAlertEmailSentAt : null
             const timePassedAfterLastEmail = Date.now() - lastEmailSentAtTimestamp
+            console.log('lastEmailSentAtTimestamp>>>>>>>>', lastEmailSentAtTimestamp);
+            console.log('timePassedAfterLastEmail>>>>>>>>', timePassedAfterLastEmail);
             if(lastEmailSentAtTimestamp != null && timePassedAfterLastEmail > 60*15*1000){
                 //Resolve location data where speeding occured
                 const openCageRequestURL = `https://api.opencagedata.com/geocode/v1/json?q=${highestSpeed.latitude}%2C%20${highestSpeed.longitude}&key=${process.env.NODE_SERVER_OPENCAGEAPI}&language=en&pretty=1`
