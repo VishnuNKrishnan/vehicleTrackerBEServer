@@ -59,7 +59,7 @@ async function assignDriverToVehicle(detailsObject){
                 detailsObject.driverPhotoBase64
             )
             //Send SMS - Only if contact is verified
-            vehicleDetailsObject.driverContactVerified == true ? sendDriverAssignedConfirmation_SMS.sendDriverAssignedConfirmation_SMS(detailsObject.driverContact, vehicleDetailsObject.vehicleDescription, vehicleDetailsObject.licensePlate, detailsObject.driverName, detailsObject.driverEmail, detailsObject,driverContact) : null
+            sendDriverAssignedConfirmation_SMS.sendDriverAssignedConfirmation_SMS(detailsObject.driverContact, vehicleDetailsObject.vehicleDescription, vehicleDetailsObject.licensePlate, detailsObject.driverName, detailsObject.driverEmail, detailsObject,driverContact)
         }
         console.log(`Driver details updation status: ${responseData.driverDetailsUpdated}`)
         return responseData
