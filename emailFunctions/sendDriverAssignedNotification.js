@@ -124,7 +124,7 @@ async function sendNewDriverAssigned_Email(vehicleType, driverName, ownerName, l
       <body style="background-color:#f0f0f0;">
         
     <div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
-      {vehicleType} assigned to you!
+      ${vehicleType} assigned to you!
     </div>
   
         
