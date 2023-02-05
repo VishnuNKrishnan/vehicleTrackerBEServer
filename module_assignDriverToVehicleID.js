@@ -1,5 +1,6 @@
 const db = require('./module_initializeFirebase')
 const sendEmailNotification = require('./emailFunctions/sendDriverAssignedNotification')
+const sendDriverAssignedConfirmation_SMS = require('./SMSFunctions/sendDriverAssignedConfirmation_SMS')
 
 async function assignDriverToVehicle(detailsObject){
     //Sample of parameters received from the request:
@@ -78,6 +79,7 @@ async function assignDriverToVehicle(detailsObject){
             detailsObject.driverContact,
             detailsObject.driverPhotoBase64
         )
+        vehicleDetailsObject.driverContactVerified == true ? sendDriverAssignedConfirmation_SMS.sendDriverAssignedConfirmation_SMS(detailsObject.driverContact, vehicleDetailsObject.vehicleDescription, vehicleDetailsObject.licensePlate, detailsObject.driverName, detailsObject.driverEmail, detailsObject,driverContact) : null
     }
 
     console.log(`Driver details updation status: ${responseData.driverDetailsUpdated}`)
