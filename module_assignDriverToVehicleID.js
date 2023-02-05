@@ -58,6 +58,8 @@ async function assignDriverToVehicle(detailsObject){
                 detailsObject.driverContact,
                 detailsObject.driverPhotoBase64
             )
+            //Send SMS - Only if contact is verified
+            vehicleDetailsObject.driverContactVerified == true ? sendDriverAssignedConfirmation_SMS.sendDriverAssignedConfirmation_SMS(detailsObject.driverContact, vehicleDetailsObject.vehicleDescription, vehicleDetailsObject.licensePlate, detailsObject.driverName, detailsObject.driverEmail, detailsObject,driverContact) : null
         }
         console.log(`Driver details updation status: ${responseData.driverDetailsUpdated}`)
         return responseData
@@ -79,7 +81,6 @@ async function assignDriverToVehicle(detailsObject){
             detailsObject.driverContact,
             detailsObject.driverPhotoBase64
         )
-        vehicleDetailsObject.driverContactVerified == true ? sendDriverAssignedConfirmation_SMS.sendDriverAssignedConfirmation_SMS(detailsObject.driverContact, vehicleDetailsObject.vehicleDescription, vehicleDetailsObject.licensePlate, detailsObject.driverName, detailsObject.driverEmail, detailsObject,driverContact) : null
     }
 
     console.log(`Driver details updation status: ${responseData.driverDetailsUpdated}`)
