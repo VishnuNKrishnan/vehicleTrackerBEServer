@@ -7,7 +7,6 @@ const cors = require('cors')
 app.use(cors())
 
 const WebSocket = require('ws')
-const wss = new WebSocket.Server({server: server})
 
 //const appendSTRCoords = require('./module_appendSTRCoords')
 const cron = require('node-cron')
@@ -50,15 +49,6 @@ cron.schedule('1 * * * * *', removeExpiredOTPs_CRON.removeExpiredOTPs)
 //WebSocket Communications
 //------------------------
 
-wss.on('connection', function connection(ws){
-    console.log(`New vehicle connected.`)
-    ws.send('Welcome, new vehicle!')
-
-    ws.on('message', function incoming(message){
-        console.log(`New message: ${message}`)
-        ws.send(`Message received!`)
-    })
-})
 
 //API Endpoint to create new account
 app.post('/app/createNewAccount', async (request, response) => {
@@ -276,3 +266,41 @@ app.post('/app/getOTP', async (request, response) => {
     console.log(`\n\n\n`)
 })
 
+//Live Tracking - WebSocket Server
+const WebSocketServer = new WebSocket.Server({ port: process.env.WS_PORT || 4001 })
+const db = require('./module_initializeFirebase')
+
+WebSocketServer.on('connection', (socket) => {
+    console.log('Web Socket Client connected');
+    socket.send('Web Socket Connection Successful!')
+
+    let unsub
+  
+    socket.on('message', (message) => {
+
+      const receivedData = JSON.parse(message)
+      //Send data to client as and when data changes on firestore
+      if(receivedData.type == 'liveTrackingDataRequest'){
+        const vehicleId = receivedData.vehicleId
+        console.log(vehicleId)
+
+        doc = db.collection('vehicles').doc(vehicleId)
+        unsub = doc.onSnapshot(docSnapshot => {
+        //console.log(`Received doc snapshot: ${docSnapshot.data().liveData}`)
+
+        const returnData = docSnapshot.data()
+        socket.send(JSON.stringify(returnData))
+        
+        }, err => {
+            console.log(`Encountered error: ${err}`);
+        });
+
+      }
+    })
+  
+    socket.on('close', () => {
+        console.log('Client disconnected. Aborting firebase connection.')
+        unsub() //Unsubscribe from Firestore connection
+        console.log('WebSocket Client disconnected')
+    })
+})

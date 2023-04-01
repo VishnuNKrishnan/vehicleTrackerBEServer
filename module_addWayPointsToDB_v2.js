@@ -53,6 +53,8 @@ async function addWayPointsToDB(wayPointsArray){
         lastIdAdded = obj.timestamp
         newCoordsCount++
         speedArray.push({timestamp: obj.timestamp, speed: obj.speed * 3.6, latitude: obj.latitude, longitude: obj.longitude})
+        //Live Data - Updation
+        db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({liveData: {latitude: obj.latitude, longitude: obj.longitude, speed: obj.speed ? obj.speed : 0, heading: obj.heading ? obj.heading : 0, accuracy: obj.accuracy ? obj.accuracy : 0}})
     })
 
     //Resolve Coords to location unresolvedCoordsCount is greater than 150...
