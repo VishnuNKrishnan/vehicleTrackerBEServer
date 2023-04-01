@@ -270,6 +270,8 @@ app.post('/app/getOTP', async (request, response) => {
 const WebSocketServer = new WebSocket.Server({ port: process.env.WS_PORT || 4001 })
 const db = require('./module_initializeFirebase')
 
+console.log(`Websocket Server running on port ${process.env.WS_PORT || 4001}`)
+
 WebSocketServer.on('connection', (socket) => {
     console.log('Web Socket Client connected');
     socket.send('Web Socket Connection Successful!')
