@@ -60,8 +60,8 @@ async function addWayPointsToDB(wayPointsArray){
         speedArray.push({timestamp: obj.timestamp, speed: obj.speed * 3.6, latitude: obj.latitude, longitude: obj.longitude})
         
         //Live Data - Local Updation (not pushing to firestore yet)
-        const currentCoords = {currentMappedCoords : [obj.latitude, obj.longitude]}
-        liveCoordsArray = [...liveCoordsArray, currentCoords.currentMappedCoords]
+        //const currentCoords = {currentMappedCoords : [obj.latitude, obj.longitude]}
+        //liveCoordsArray = [...liveCoordsArray, currentCoords.currentMappedCoords]
 
         updatedLiveData.newCoords = liveCoordsArray
         updatedLiveData.latitude = obj.latitude
