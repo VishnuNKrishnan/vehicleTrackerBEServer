@@ -61,8 +61,8 @@ async function addWayPointsToDB(wayPointsArray){
         
         //Live Data - Local Updation (not pushing to firestore yet)
         const currentCoords = {
-            currentMappedLatitude : obj.latitude,
-            currentMappedLongitude : obj.longitude
+            currentLatitude : obj.latitude,
+            currentLongitude : obj.longitude
         }
         liveCoordsArray = [...liveCoordsArray, currentCoords]
 
