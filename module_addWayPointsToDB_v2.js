@@ -83,7 +83,7 @@ async function addWayPointsToDB(wayPointsArray){
         const lastLongitude = wayPointsArray[wayPointsArray.length - 1].longitude
         const lastTimestamp = wayPointsArray[wayPointsArray.length - 1].timestamp
         const vehicleId = wayPointsArray[wayPointsArray.length - 1].vehicleId
-        const currentLocation = rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
+        const currentLocation = await rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
         liveLocationIsUpdated = true
         updatedLiveData.location = currentLocation
     }
