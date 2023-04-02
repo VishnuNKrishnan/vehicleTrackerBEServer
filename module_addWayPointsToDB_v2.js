@@ -66,9 +66,9 @@ async function addWayPointsToDB(wayPointsArray){
         updatedLiveData.newCoords = liveCoordsArray
         updatedLiveData.latitude = obj.latitude
         updatedLiveData.longitude = obj.longitude
-        updatedLiveData.speed = obj.speed
-        updatedLiveData.heading = obj.heading
-        updatedLiveData.accuracy = obj.accuracy
+        updatedLiveData.speed = obj.speed ? obj.speed : 0
+        updatedLiveData.heading = obj.heading ? obj.heading : 0
+        updatedLiveData.accuracy = obj.accuracy ? obj.accuracy : 0
     })
 
     //Resolve Coords to location unresolvedCoordsCount is greater than 150...
