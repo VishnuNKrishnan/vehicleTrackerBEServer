@@ -29,8 +29,8 @@ async function addWayPointsToDB(wayPointsArray){
     
     //To update liveData object on firestore - used for realtime tracking
     var liveCoordsArray = []
-    var liveLocationIsUpdated = false
     var updatedLiveData = {}
+    updatedLiveData.liveLocationIsUpdated = false
 
     const vehicleRef = db.collection('vehicles').doc(wayPointsArray[0].vehicleId)
     var vehicleData = await vehicleRef.get()
@@ -60,8 +60,11 @@ async function addWayPointsToDB(wayPointsArray){
         speedArray.push({timestamp: obj.timestamp, speed: obj.speed * 3.6, latitude: obj.latitude, longitude: obj.longitude})
         
         //Live Data - Local Updation (not pushing to firestore yet)
-        //const currentCoords = {currentMappedCoords : [obj.latitude, obj.longitude]}
-        //liveCoordsArray = [...liveCoordsArray, currentCoords.currentMappedCoords]
+        const currentCoords = {
+            currentMappedLatitude : obj.latitude,
+            currentMappedLatitude : obj.longitude
+        }
+        liveCoordsArray = [...liveCoordsArray, currentCoords]
 
         updatedLiveData.newCoords = liveCoordsArray
         updatedLiveData.latitude = obj.latitude
@@ -74,8 +77,7 @@ async function addWayPointsToDB(wayPointsArray){
     //Resolve Coords to location unresolvedCoordsCount is greater than 150...
     var currentUnresolvedCoordsCount = vehicleData.data().unresolvedCoordsCount
     currentUnresolvedCoordsCount += newCoordsCount
-    //console.log(vehicleData.data().unresolvedCoordsCount);
-    //console.log(currentUnresolvedCoordsCount);
+    
     db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({unresolvedCoordsCount: currentUnresolvedCoordsCount, lastOnline: Date.now(), lastRecordedSpeed: wayPointsArray[wayPointsArray.length - 1].speed})
 
     if(currentUnresolvedCoordsCount >= 150){
@@ -84,7 +86,7 @@ async function addWayPointsToDB(wayPointsArray){
         const lastTimestamp = wayPointsArray[wayPointsArray.length - 1].timestamp
         const vehicleId = wayPointsArray[wayPointsArray.length - 1].vehicleId
         const currentLocation = await rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
-        liveLocationIsUpdated = true
+        updatedLiveData.liveLocationIsUpdated = true
         updatedLiveData.location = currentLocation
     }
 
