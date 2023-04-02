@@ -272,11 +272,12 @@ const db = require('./module_initializeFirebase')
 
 console.log(`Websocket Server running on port ${process.env.WS_PORT || 4001}`)
 
+let unsub
+
 WebSocketServer.on('connection', (socket) => {
     console.log('Web Socket Client connected');
     socket.send('Web Socket Connection Successful!')
 
-    let unsub
   
     socket.on('message', (message) => {
 
@@ -287,10 +288,14 @@ WebSocketServer.on('connection', (socket) => {
         console.log(vehicleId)
 
         doc = db.collection('vehicles').doc(vehicleId)
-        unsub = doc.onSnapshot(docSnapshot => {
-        //console.log(`Received doc snapshot: ${docSnapshot.data().liveData}`)
 
-        const returnData = docSnapshot.data()
+        unsubDoc = doc.onSnapshot(docSnapshot => {
+        var returnData = docSnapshot.data().liveData
+        returnData.type = 'liveLocationUpdate'
+
+        const currentTimestamp = Date.now()
+        returnData.onlineStatus = currentTimestamp - docSnapshot.data().lastOnline < 30000 ? 'online' : 'offline'
+        returnData.lastIdentifiedLoction = 
         socket.send(JSON.stringify(returnData))
         
         }, err => {
@@ -302,7 +307,7 @@ WebSocketServer.on('connection', (socket) => {
   
     socket.on('close', () => {
         console.log('Client disconnected. Aborting firebase connection.')
-        unsub() //Unsubscribe from Firestore connection
+        unsubDoc() //Unsubscribe from Firestore connection
         console.log('WebSocket Client disconnected')
     })
 })

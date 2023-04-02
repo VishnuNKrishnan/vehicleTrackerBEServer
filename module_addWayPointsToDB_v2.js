@@ -26,6 +26,11 @@ async function addWayPointsToDB(wayPointsArray){
     var lastIdAdded //To be returned to the client
     var newCoordsCount = 0
     var speedArray = [] //To send speeding alert email if request objects contain speed value greater than the allowed speed
+    
+    //To update liveData object on firestore - used for realtime tracking
+    var liveCoordsArray = []
+    var liveLocationIsUpdated = false
+    var updatedLiveData = {}
 
     const vehicleRef = db.collection('vehicles').doc(wayPointsArray[0].vehicleId)
     var vehicleData = await vehicleRef.get()
@@ -53,8 +58,17 @@ async function addWayPointsToDB(wayPointsArray){
         lastIdAdded = obj.timestamp
         newCoordsCount++
         speedArray.push({timestamp: obj.timestamp, speed: obj.speed * 3.6, latitude: obj.latitude, longitude: obj.longitude})
-        //Live Data - Updation
-        db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({liveData: {latitude: obj.latitude, longitude: obj.longitude, speed: obj.speed ? obj.speed : 0, heading: obj.heading ? obj.heading : 0, accuracy: obj.accuracy ? obj.accuracy : 0}})
+        
+        //Live Data - Local Updation (not pushing to firestore yet)
+        const currentCoords = [obj.latitude, obj.longitude]
+        liveCoordsArray.push(currentCoords)
+
+        updatedLiveData.newCoords = liveCoordsArray
+        updatedLiveData.latitude = obj.latitude
+        updatedLiveData.longitude = obj.longitude
+        updatedLiveData.speed = obj.speed
+        updatedLiveData.heading = obj.heading
+        updatedLiveData.accuracy = obj.accuracy
     })
 
     //Resolve Coords to location unresolvedCoordsCount is greater than 150...
@@ -69,10 +83,13 @@ async function addWayPointsToDB(wayPointsArray){
         const lastLongitude = wayPointsArray[wayPointsArray.length - 1].longitude
         const lastTimestamp = wayPointsArray[wayPointsArray.length - 1].timestamp
         const vehicleId = wayPointsArray[wayPointsArray.length - 1].vehicleId
-        rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
+        const currentLocation = rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
+        liveLocationIsUpdated = true
+        updatedLiveData.location = currentLocation
     }
 
-    //console.log(vehicleData);
+    //Pushing all live data
+    db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({liveData: updatedLiveData})
 
     //Speeding Email Alert if required
     const highestSpeed = findFastest(speedArray)
@@ -125,6 +142,7 @@ async function addWayPointsToDB(wayPointsArray){
             }
         }
     }
+
         
 
     //Return the id(timestamp) of the last waypoint added. The tracker will erase all the collected coords till this ID from its memory when lasetIdAdded is received
