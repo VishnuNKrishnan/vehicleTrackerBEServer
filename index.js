@@ -267,10 +267,10 @@ app.post('/app/getOTP', async (request, response) => {
 })
 
 //Live Tracking - WebSocket Server
-const WebSocketServer = new WebSocket.Server({ port: process.env.WS_PORT || 8443 })
+const WebSocketServer = new WebSocket.Server({ port: process.env.WS_PORT || 4001 })
 const db = require('./module_initializeFirebase')
 
-console.log(`Websocket Server running on port ${process.env.WS_PORT || 8443}`)
+console.log(`Websocket Server running on port ${process.env.WS_PORT || 4001}`)
 
 let unsub
 
