@@ -267,10 +267,10 @@ app.post('/app/getOTP', async (request, response) => {
 })
 
 //Live Tracking - WebSocket Server
-const WebSocketServer = new WebSocket.Server({ port: process.env.WS_PORT || 4001 })
+const WebSocketServer = new WebSocket.Server({ port: process.env.WS_PORT || 8443 })
 const db = require('./module_initializeFirebase')
 
-console.log(`Websocket Server running on port ${process.env.WS_PORT || 4001}`)
+console.log(`Websocket Server running on port ${process.env.WS_PORT || 8443}`)
 
 let unsub
 
@@ -295,7 +295,7 @@ WebSocketServer.on('connection', (socket) => {
 
         const currentTimestamp = Date.now()
         returnData.onlineStatus = currentTimestamp - docSnapshot.data().lastOnline < 30000 ? 'online' : 'offline'
-        returnData.lastIdentifiedLoction = 
+        returnData.lastOnlineTimestamp = docSnapshot.data().lastOnline
         socket.send(JSON.stringify(returnData))
         
         }, err => {
