@@ -6,8 +6,6 @@ require('dotenv').config()
 const cors = require('cors')
 app.use(cors())
 
-const WebSocket = require('ws')
-
 //const appendSTRCoords = require('./module_appendSTRCoords')
 const cron = require('node-cron')
 const removeExpiredOTPs_CRON = require('./cronJobs/removeExpiredOTPs')
@@ -45,9 +43,13 @@ app.use(express.json({ limit: 100000 }))
 //------------------------
 cron.schedule('1 * * * * *', removeExpiredOTPs_CRON.removeExpiredOTPs)
 
-//------------------------
-//WebSocket Communications
-//------------------------
+
+//Wake Server
+app.get('/app/wake', (request, response) => {
+    console.log('BE Server woken up.')
+    response.json({message: 'BE Server woken up.'})
+    response.end()
+})
 
 
 //API Endpoint to create new account
@@ -264,50 +266,4 @@ app.post('/app/getOTP', async (request, response) => {
 
     console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
     console.log(`\n\n\n`)
-})
-
-//Live Tracking - WebSocket Server
-const WebSocketServer = new WebSocket.Server({ port: process.env.WS_PORT || 4001 })
-const db = require('./module_initializeFirebase')
-
-console.log(`Websocket Server running on port ${process.env.WS_PORT || 4001}`)
-
-let unsub
-
-WebSocketServer.on('connection', (socket) => {
-    console.log('Web Socket Client connected');
-    socket.send('Web Socket Connection Successful!')
-
-  
-    socket.on('message', (message) => {
-
-      const receivedData = JSON.parse(message)
-      //Send data to client as and when data changes on firestore
-      if(receivedData.type == 'liveTrackingDataRequest'){
-        const vehicleId = receivedData.vehicleId
-        console.log(vehicleId)
-
-        doc = db.collection('vehicles').doc(vehicleId)
-
-        unsubDoc = doc.onSnapshot(docSnapshot => {
-        var returnData = docSnapshot.data().liveData
-        returnData.type = 'liveLocationUpdate'
-
-        const currentTimestamp = Date.now()
-        returnData.onlineStatus = currentTimestamp - docSnapshot.data().lastOnline < 30000 ? 'online' : 'offline'
-        returnData.lastOnlineTimestamp = docSnapshot.data().lastOnline
-        socket.send(JSON.stringify(returnData))
-        
-        }, err => {
-            console.log(`Encountered error: ${err}`);
-        });
-
-      }
-    })
-  
-    socket.on('close', () => {
-        console.log('Client disconnected. Aborting firebase connection.')
-        unsubDoc() //Unsubscribe from Firestore connection
-        console.log('WebSocket Client disconnected')
-    })
 })
