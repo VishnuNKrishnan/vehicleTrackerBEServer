@@ -50,6 +50,8 @@ async function linkTrackerWithAccount(accountId, vehicleId, vehiclePassword, lic
             alertDriver: true,
             alertDriverMethods: ['SMS', 'email'],
             lastAlertEmailSentAt: 0, //Timestamp of when the last alert email was sent
+            liveData: {
+            },
             driverName: "",
             driverContact: "",
             driverEmail: "",
