@@ -2,6 +2,7 @@ const db = require('./module_initializeFirebase')
 const { default: fetch } = require('node-fetch')
 require('dotenv').config();
 const rctl = require('./module_resolveCoordsToLocation')
+const getWeather = require('./module_getWeather')
 const sendSpeedingAlertMail = require('./emailFunctions/sendSpeedingAlert')
 const sendSpeedingAlert_SMS = require('./SMSFunctions/sendSpeedingAlert_SMS')
 
@@ -86,8 +87,10 @@ async function addWayPointsToDB(wayPointsArray){
         const lastTimestamp = wayPointsArray[wayPointsArray.length - 1].timestamp
         const vehicleId = wayPointsArray[wayPointsArray.length - 1].vehicleId
         const currentLocation = await rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
+        const currentWeather = await getWeather.callGetWeather(lastLatitude, lastLongitude)
         updatedLiveData.liveLocationIsUpdated = true
         updatedLiveData.location = currentLocation
+        updatedLiveData.currentWeather = currentWeather
     }
 
     //Pushing all live data
