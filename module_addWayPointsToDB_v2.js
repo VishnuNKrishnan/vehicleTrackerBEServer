@@ -1,5 +1,9 @@
 const db = require('./module_initializeFirebase')
+const { default: fetch } = require('node-fetch')
+require('dotenv').config();
 const rctl = require('./module_resolveCoordsToLocation')
+const sendSpeedingAlertMail = require('./emailFunctions/sendSpeedingAlert')
+const sendSpeedingAlert_SMS = require('./SMSFunctions/sendSpeedingAlert_SMS')
 
 // -------------------------------------------------
 //  Workflow:
@@ -21,10 +25,26 @@ const rctl = require('./module_resolveCoordsToLocation')
 async function addWayPointsToDB(wayPointsArray){
     var lastIdAdded //To be returned to the client
     var newCoordsCount = 0
+    var speedArray = [] //To send speeding alert email if request objects contain speed value greater than the allowed speed
+    
+    //To update liveData object on firestore - used for realtime tracking
+    var liveCoordsArray = []
+    var updatedLiveData = {}
+    updatedLiveData.liveLocationIsUpdated = false
 
     const vehicleRef = db.collection('vehicles').doc(wayPointsArray[0].vehicleId)
     var vehicleData = await vehicleRef.get()
     const driverName = vehicleData.data().driverName
+
+    const allowedSpeedLimit = vehicleData.data().speedLimit
+    const lastAlertEmailSentAt = vehicleData.data().lastAlertEmailSentAt ? vehicleData.data().lastAlertEmailSentAt : null
+
+    //To return single object from speedArray which has the maximum speed
+    function findFastest(arr) {
+        return arr.reduce((fastest, current) => {
+            return (current.speed > fastest.speed) ? current : fastest;
+        });
+    }
     
 
     wayPointsArray.map(obj => {
@@ -37,13 +57,27 @@ async function addWayPointsToDB(wayPointsArray){
         db.collection('vehicles').doc(wayPointsArray[0].vehicleId).collection('providedWaypoints').doc(JSON.stringify(obj.timestamp)).set(obj)
         lastIdAdded = obj.timestamp
         newCoordsCount++
+        speedArray.push({timestamp: obj.timestamp, speed: obj.speed * 3.6, latitude: obj.latitude, longitude: obj.longitude})
+        
+        //Live Data - Local Updation (not pushing to firestore yet)
+        const currentCoords = {
+            currentLatitude : obj.latitude,
+            currentLongitude : obj.longitude
+        }
+        liveCoordsArray = [...liveCoordsArray, currentCoords]
+
+        updatedLiveData.newCoords = liveCoordsArray
+        updatedLiveData.latitude = obj.latitude
+        updatedLiveData.longitude = obj.longitude
+        updatedLiveData.speed = obj.speed ? obj.speed : 0
+        updatedLiveData.heading = obj.heading ? obj.heading : 0
+        updatedLiveData.accuracy = obj.accuracy ? obj.accuracy : 0
     })
 
     //Resolve Coords to location unresolvedCoordsCount is greater than 150...
     var currentUnresolvedCoordsCount = vehicleData.data().unresolvedCoordsCount
     currentUnresolvedCoordsCount += newCoordsCount
-    //console.log(vehicleData.data().unresolvedCoordsCount);
-    //console.log(currentUnresolvedCoordsCount);
+    
     db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({unresolvedCoordsCount: currentUnresolvedCoordsCount, lastOnline: Date.now(), lastRecordedSpeed: wayPointsArray[wayPointsArray.length - 1].speed})
 
     if(currentUnresolvedCoordsCount >= 150){
@@ -51,10 +85,66 @@ async function addWayPointsToDB(wayPointsArray){
         const lastLongitude = wayPointsArray[wayPointsArray.length - 1].longitude
         const lastTimestamp = wayPointsArray[wayPointsArray.length - 1].timestamp
         const vehicleId = wayPointsArray[wayPointsArray.length - 1].vehicleId
-        rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
+        const currentLocation = await rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
+        updatedLiveData.liveLocationIsUpdated = true
+        updatedLiveData.location = currentLocation
     }
 
-    //console.log(vehicleData);
+    //Pushing all live data
+    db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({liveData: updatedLiveData})
+
+    //Speeding Email Alert if required
+    const highestSpeed = findFastest(speedArray)
+    if(highestSpeed.speed > allowedSpeedLimit){
+        if(vehicleData.data().alertDriverMethods.includes('email')){
+            //Add Code to send mail only 15 minutes after last sent mail
+            const lastEmailSentAtTimestamp = vehicleData.data().lastAlertEmailSentAt != null ? vehicleData.data().lastAlertEmailSentAt : null
+            const timePassedAfterLastEmail = Date.now() - lastEmailSentAtTimestamp
+            console.log('lastEmailSentAtTimestamp>>>>>>>>', lastEmailSentAtTimestamp);
+            console.log('timePassedAfterLastEmail>>>>>>>>', timePassedAfterLastEmail);
+            if(lastEmailSentAtTimestamp != null && timePassedAfterLastEmail > 60*15*1000){
+                //Resolve location data where speeding occured
+                const openCageRequestURL = `https://api.opencagedata.com/geocode/v1/json?q=${highestSpeed.latitude}%2C%20${highestSpeed.longitude}&key=${process.env.NODE_SERVER_OPENCAGEAPI}&language=en&pretty=1`
+                const openCageResponse = await fetch(openCageRequestURL)
+                var openCageResponseJSON = await openCageResponse.json()
+
+                const city = openCageResponseJSON.results[0].components.city
+                const roadName = openCageResponseJSON.results[0].components.road
+                const suburb = openCageResponseJSON.results[0].components.suburb ? openCageResponseJSON.results[0].components.suburb : ''
+
+                console.log("Initiating speeding email alert");
+                sendSpeedingAlertMail.sendSpeedingAlert_Email(
+                    vehicleData.data().licensePlate,
+                    vehicleData.data().vehicleDescription,
+                    suburb,
+                    roadName,
+                    city,
+                    highestSpeed.speed,
+                    'km/h',
+                    allowedSpeedLimit,
+                    vehicleData.data().driverName,
+                    vehicleData.data().driverContact,
+                    vehicleData.data().driverEmail,
+                    highestSpeed.timestamp
+                )
+                db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({lastAlertEmailSentAt: Date.now()})
+                console.log('Speeding email triggered');
+
+                //Send speeding alert SMS
+                sendSpeedingAlert_SMS.sendSpeedingAlert_SMS(
+                    vehicleData.data().driverContact,
+                    vehicleData.data().vehicleDescription,
+                    vehicleData.data().licensePlate,
+                    highestSpeed.speed,
+                    highestSpeed.timestamp,
+                    city,
+                    `${suburb}, ${roadName}`,
+                    vehicleData.data().driverName
+                )
+            }
+        }
+    }
+
         
 
     //Return the id(timestamp) of the last waypoint added. The tracker will erase all the collected coords till this ID from its memory when lasetIdAdded is received

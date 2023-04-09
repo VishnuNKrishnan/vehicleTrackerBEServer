@@ -1,7 +1,7 @@
 const db = require('./module_initializeFirebase')
 const uuid = require('./module_generateUUID')
 
-async function linkTrackerWithAccount(accountId, vehicleId){
+async function linkTrackerWithAccount(accountId, vehicleId, vehiclePassword, licensePlate, vehicleDescription, vehicleType, vehicleGroup, engineNumber, chassisNumber){
     console.log(`Attempting to add vehicle id '${vehicleId}' to account id '${accountId}'...`);
 
     //Checking if provided vehicleId exists in unregisteredVehicleIds collection in the database
@@ -14,6 +14,11 @@ async function linkTrackerWithAccount(accountId, vehicleId){
     }else{
         console.log(`Vehicle ID '${vehicleId}' found!`);
         console.log(vehicleIdData.data())
+
+        if(vehicleIdData.data().vehiclePassword != vehiclePassword){
+            console.log(`Invalid Vehicle Password provided. Operation aborted.`);
+            return
+        }
     }
 
     //Checking if provided accountId exists in registeredAccounts collection in the database
@@ -33,13 +38,21 @@ async function linkTrackerWithAccount(accountId, vehicleId){
         console.log(`\n\nAdding vehicle to account...`);
         var newVehicleDocumentTemplate = {
             vehicleId: vehicleId,
-            vehiclePassword: uuid.uuid(),
-            licensePlate: "",
-            vehicleDescription: "",
-            vehicleType: "",
-            vehicleGroup: "",
+            vehiclePassword: vehiclePassword,
+            licensePlate: licensePlate,
+            vehicleDescription: vehicleDescription,
+            vehicleType: vehicleType,
+            vehicleGroup: vehicleGroup,
+            engineNumber: engineNumber,
+            chassisNumber: chassisNumber,
+            speedLimit: 120,
+            speedingAlert: true,
+            alertDriver: true,
+            alertDriverMethods: ['SMS', 'email'],
+            lastAlertEmailSentAt: 0, //Timestamp of when the last alert email was sent
             driverName: "",
             driverContact: "",
+            driverEmail: "",
             displayPictureBase64: "",
             lastRecordedSpeed: null,
             registeredAccountId: accountId,
@@ -71,7 +84,7 @@ async function linkTrackerWithAccount(accountId, vehicleId){
     return
 }
 
-//linkTrackerWithAccount(1212621, 'tlp-856-54t-rt1')
-//Meaning: If vehicle id tlp-856-54t-rt1 exists in unregisteredVehicleIds collection in the db, register it with account id 1212621.
+//linkTrackerWithAccount(1212621, '785-965-854-855')
+//Meaning: If vehicle id 555-999-444-333 exists in unregisteredVehicleIds collection in the db, register it with account id 1212621.
 
 module.exports = { linkTrackerWithAccount }

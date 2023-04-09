@@ -23,10 +23,15 @@ async function authenticateWebApp(requestBody){
         return responseForClient
     }
 
-    if(providedPassword == accountIdData.data().accountPassword){
+    if(providedPassword == accountIdData.data().accountPassword && accountIdData.data().accountAccess.allowed == true){
         responseForClient.status = 'success'
         responseForClient.message = 'Authentication Successful!'
         responseForClient.authExpiry = Date.now() + (60 * 60 * 24 * 30 * 1000) //30 days from now.
+        return responseForClient
+    }else if(providedPassword == accountIdData.data().accountPassword && accountIdData.data().accountAccess.allowed == false){
+        responseForClient.status = 'failure'
+        responseForClient.message = accountIdData.data().accountAccess.loginMessage
+        responseForClient.authExpiry = Date.now() //now.
         return responseForClient
     }else{
         responseForClient.status = 'failure'

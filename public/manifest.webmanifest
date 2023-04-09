@@ -4,9 +4,9 @@
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
-    "name": "Transmitter",
-    "short_name": "Tracked Transmitter Config",
-    "description": "Configuration Terminal for On Board Tracker",
+    "name": "KnoWhere - Transmitter",
+    "short_name": "KnoWhere - Transmitter",
+    "description": "KnoWhere - Transmitter",
     "icons": [
         {
             "src": "/icon-192x192.png",
