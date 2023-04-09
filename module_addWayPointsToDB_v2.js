@@ -90,7 +90,7 @@ async function addWayPointsToDB(wayPointsArray){
         const currentWeather = await getWeather.callGetWeather(lastLatitude, lastLongitude)
         updatedLiveData.liveLocationIsUpdated = true
         updatedLiveData.location = currentLocation
-        updatedLiveData.currentWeather = currentWeather
+        updatedLiveData.currentWeather = currentWeather ? currentWeather : {}
     }
 
     //Pushing all live data
