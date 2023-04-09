@@ -87,7 +87,7 @@ async function addWayPointsToDB(wayPointsArray){
         const lastTimestamp = wayPointsArray[wayPointsArray.length - 1].timestamp
         const vehicleId = wayPointsArray[wayPointsArray.length - 1].vehicleId
         const currentLocation = await rctl.resolveCoords([lastLatitude, lastLongitude], lastTimestamp, vehicleId)
-        const currentWeather = await getWeather.callGetWeather(lastLatitude, lastLongitude)
+        const currentWeather = await getWeather.getWeather(lastLatitude, lastLongitude)
         updatedLiveData.liveLocationIsUpdated = true
         updatedLiveData.location = currentLocation
         updatedLiveData.currentWeather = currentWeather ? currentWeather : {}
