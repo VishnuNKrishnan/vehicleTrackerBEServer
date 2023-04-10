@@ -12,7 +12,7 @@ async function updateLiveData(liveData){
         longitude : liveData.longitude,
         speed : liveData.speed,
         heading : liveData.heading,
-        accuracy : liveData.accuracy
+        accuracy : liveData.accuracy ? liveData.accuracy : null
     }
     //console.log(updatedLiveData)
     db.collection('vehicles').doc(liveData.vehicleId).update({liveData: updatedLiveData})
