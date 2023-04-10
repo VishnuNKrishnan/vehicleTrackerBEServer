@@ -13,6 +13,7 @@ const authenticateTracker = require(`./module_authenticateTracker`)
 const linkTrackerWithAccount = require(`./module_linkTrackerWithAccount`)
 const createNewAccount = require(`./module_createNewAccount`)
 const addWayPointsToDB = require('./module_addWayPointsToDB_v2')
+const updateLiveData = require('./module_updateLiveData')
 const authenticateWebApp = require('./module_authenticateWebApp')
 const getVisitedLocations = require('./module_getVisitedLocations')
 const getWaypointCoords = require('./module_getWayPointCoords')
@@ -216,6 +217,16 @@ app.post('/api/addWayPoints', async (request, response) => {
 
     //appendSTRCoords.appendSTRCoords(request.body[0].vehicleId)
 });
+
+//API Endpoint for onboard device to update Live Data. Called every second by the on board device
+app.post('/api/updateLiveData', async (request, response) => {
+    console.log(`\n▇▇▇▇ ${Date()} ▇▇▇▇\n`)
+    console.log(`Update live data: ${request}`)
+    var responseForClientObject = await updateLiveData.updateLiveData(request.body)
+    console.log(`\n▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇\n`)
+    response.json(responseForClientObject)
+    response.end()
+})
 
 //API Endpoint to assign a driver to a vehicle ID
 app.post('/app/assignDriverToVehicleID', async (request, response) => {
