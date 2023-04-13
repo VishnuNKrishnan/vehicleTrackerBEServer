@@ -1,6 +1,6 @@
 require('dotenv').config()
 const sgMail = require('@sendgrid/mail')
-sgMail.setApiKey('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')
+sgMail.setApiKey('API_KEY')
 
 async function sendSpeedingAlert_Email(licensePlate, vehicleDescription, roadReference, roadName, city, recordedSpeed, speedUnit, alertLimit, driverName = 'Not Assigned', driverContact, driverEmail, speedingTimestamp){
 
