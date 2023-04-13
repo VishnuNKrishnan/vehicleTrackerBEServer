@@ -67,7 +67,7 @@ async function addWayPointsToDB(wayPointsArray){
         }
         liveCoordsArray = [...liveCoordsArray, currentCoords]
 
-        updatedLiveData.newCoords = liveCoordsArray
+        //updatedLiveData.newCoords = liveCoordsArray
         updatedLiveData.latitude = obj.latitude
         updatedLiveData.longitude = obj.longitude
         updatedLiveData.speed = obj.speed ? obj.speed : 0
@@ -94,7 +94,7 @@ async function addWayPointsToDB(wayPointsArray){
     }
 
     //Pushing all live data
-    //db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({liveData: updatedLiveData})
+    db.collection('vehicles').doc(wayPointsArray[0].vehicleId).update({liveData: updatedLiveData})
 
     //Speeding Email Alert if required
     const highestSpeed = findFastest(speedArray)
